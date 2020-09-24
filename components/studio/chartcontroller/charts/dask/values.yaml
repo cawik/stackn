@@ -1,0 +1,25 @@
+project:
+  slug: project-slug
+
+workers:
+  port: 10101
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+
+scheduler:
+  port: 8786
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+
+replicas: 3
+             

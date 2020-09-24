@@ -1,0 +1,50 @@
+replicas: 1
+appname: app-name
+namespace: default
+visibility: private
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 2048Mi
+  requests:
+    cpu: 700m
+    memory: 1024Mi
+
+global:
+  domain: global.domain
+
+registry:
+  secure: False
+  host: stack-docker-registry:5000
+
+imagePullSecret: regcred
+
+project:
+  slug: project-slug
+
+deployment:
+  version: version
+  name: deployment-name
+  endpoint: deployment-endpoint
+  path: deployment-path
+
+context:
+  image: context-image
+
+model:
+  bucket: models
+  file: model.tar.gz  
+
+minio:
+  host: minio-host
+  access_key: access-key
+  secret_key: secret-key
+
+
+gatekeeper:
+  realm: demo
+  client_secret: 15982a99-cf3b-4e65-82ab-03d7df84a25a
+  client_id: project_notebook
+  auth_endpoint: keycloak.domain/auth/realms
+

@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-dask-scheduler
+  labels:
+    app: {{ .Release.Name }}-dask-scheduler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-dask-scheduler
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-dask-scheduler
+        project: {{ .Values.project.slug }}
+        type: dask-cluster
+    spec:
+      containers:
+      - name: {{ .Release.Name }}-scheduler
+        image: daskdev/dask
+        command: ["dask-scheduler", "--port={{ .Values.scheduler.port }}"]
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: {{ .Values.scheduler.resources.limits.cpu }}
+            memory: {{ .Values.scheduler.resources.limits.memory }}
+          requests:
+            cpu: {{ .Values.scheduler.resources.requests.cpu }}
+            memory: {{ .Values.scheduler.resources.requests.memory }}
+        ports:
+          - containerPort: {{ .Values.scheduler.port }}
+
+        
