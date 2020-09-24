@@ -4,6 +4,7 @@ from django.dispatch import receiver
 from django.conf import settings
 from django.utils.text import slugify
 from projects.helpers import get_minio_keys
+from chartcontroller.tasks import install_chart
 import os
 import requests
 import modules.keycloak_lib as keylib
@@ -24,18 +25,24 @@ def pre_save_helmresource(sender, instance, using, **kwargs):
     action = 'deploy'
     if update:
         action = 'upgrade'
-    url = settings.CHART_CONTROLLER_URL + '/'+action
-    print(instance.params)
-    retval = requests.get(url, instance.params)
-    if retval:
-        print('Resource: '+instance.name)
-        print('Action: '+action)
-        instance.status = 'OK'
-    else:
-        print('Failed to deploy resource: '+instance.name)
-        print('Reason: {}'.format(retval.text))
-        print('Status code: {}'.format(retval.status_code))
-        instance.status = 'Failed'
+
+    install_chart.delay(instance.chart,
+                        instance.name,
+                        instance.params,
+                        instance.namespace)
+    instance.status = 'deployed'
+    # url = settings.CHART_CONTROLLER_URL + '/'+action
+    # print(instance.params)
+    # retval = requests.get(url, instance.params)
+    # if retval:
+    #     print('Resource: '+instance.name)
+    #     print('Action: '+action)
+    #     instance.status = 'OK'
+    # else:
+    #     print('Failed to deploy resource: '+instance.name)
+    #     print('Reason: {}'.format(retval.text))
+    #     print('Status code: {}'.format(retval.status_code))
+    #     instance.status = 'Failed'
 
 @receiver(pre_delete, sender=HelmResource, dispatch_uid='helmresource_pre_delete_signal')
 def pre_delete_helmresource(sender, instance, using, **kwargs):

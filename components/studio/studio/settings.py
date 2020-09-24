@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'workflows',
     'experiments',
     'deployments',
+    'chartcontroller',
     'bootstrap_modal_forms'
 ]
 
