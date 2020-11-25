@@ -621,34 +621,6 @@ class StudioClient():
     """     
 
 
-<<<<<<< HEAD
-    def retrieve_metadata(self, run_id):
-        metadata_exists = True
-        data_src = 'src/models/tracking/metadata/{}.pkl'.format(run_id)
-        if os.path.isfile(data_src):
-            print('Retrieving metadata that was tracked during the training session for storage in Studio.')
-            try:
-                import pickle
-                data_src = 'src/models/tracking/metadata/{}.pkl'.format(run_id)
-                with open(data_src, 'rb') as metadata_file:
-                    metadata = pickle.load(metadata_file)
-                    print("Training metadata was retrieved successfully.")
-            except Exception as e: # Should catch more specific error here
-                print("Error")
-                return None
-        else:
-            print("No metadata available for current training session.")
-            return None
-        return metadata
-
-    def run_training_file(self, file, run_id):
-        """ Run training file and return date and time for training, and execution time """
-        from datetime import datetime
-        training_successful = True
-        start_time = datetime.now()
-        print('Model training starting...')
-        training = subprocess.run(['python', file, run_id])
-=======
     def retrieve_metadata(self, model, run_id):
         """ Retrieve metadata logged during model training """
 
@@ -670,9 +642,9 @@ class StudioClient():
                 }
                 url = self.endpoints['metadata'].format(self.project['id'])+'/'
                 r = requests.post(url, json=metadata, headers=self.auth_headers, verify=self.secure_mode)
-                if not _check_status(r, error_msg="Failed to create metadata log for run with ID '{}'".format(run_id)):
+                if not _check_status(r, error_msg="Failed to create metadata log in Studio for run with ID '{}'".format(run_id)):
                     return 
-                print("Created metadata log for run with ID '{}'".format(run_id))
+                print("Created metadata log in Studio for run with ID '{}'".format(run_id))
             except Exception as e: # Should catch more specific error here
                 print("Error")
                 return 
@@ -686,53 +658,10 @@ class StudioClient():
 
         start_time = datetime.now()
         training = subprocess.run(['python', training_file, run_id])
->>>>>>> 49700d033eb963426cf01e1eaed71a96fd2fb446
         end_time = datetime.now()
         execution_time = str(end_time - start_time)
         start_time = start_time.strftime("%Y/%m/%d, %H:%M:%S")
         if training.returncode != 0:
-<<<<<<< HEAD
-            training_successful = False
-        metadata = self.retrieve_metadata(run_id)
-        return (start_time, execution_time, training_successful)
-        
-    def train(self, model, file):
-        """ Train a model and publish corresponding model logs to Studio. """
-        import uuid 
-        run_id = str(uuid.uuid1().hex)
-        # Training file executed here by calling run_training_file function
-        training_output = self.run_training_file(file, run_id)
-        if not training_output[2]:
-            print("Training file was not executed properly. This will be logged in database.")
-            status = 'FA'
-        else:
-            print('Training file executed properly.')
-            status = 'DO'
-        system_info = json.loads(get_system_info({}))
-        cpu_info = json.loads(get_cpu_info({}))
-        git_info = []
-        git_info = get_git_info()
-        if git_info:
-            current_git_repo = git_info[0]
-            if git_info[1]:
-                latest_git_commit = git_info[1]
-            else:
-                latest_git_commit = "No recent Git commit to log"
-        else:
-            latest_git_commit = "No recent Git commit to log"
-            current_git_repo = "Training executed in a non Git repository"
-        repo = self.get_repository()
-        repo.bucket = 'training'
-        training_data = {"uid": run_id,
-                         "trained_model": model,
-                         "training_started_at": training_output[0],
-                         "execution_time": training_output[1],
-                         "latest_git_commit": latest_git_commit,
-                         "current_git_repo": current_git_repo,
-                         "system_info": system_info,
-                         "cpu_info": cpu_info,
-                         "training_status": status}  
-=======
             training_status = 'FA'
             print("Training of the model was not executed properly.")
         else:
@@ -742,7 +671,7 @@ class StudioClient():
 
 
     def train(self, model, run_id, training_file, code_version):
-        """ Train a model and log corresponding data ing Studio. """
+        """ Train a model and log corresponding data in Studio. """
         
         system_details, cpu_details, git_details = get_run_details(code_version)
         print('Running training script...')
@@ -760,21 +689,15 @@ class StudioClient():
                          "system_details": system_details,
                          "cpu_details": cpu_details,
                          "training_status": training_output[2]}  
->>>>>>> 49700d033eb963426cf01e1eaed71a96fd2fb446
         url = self.endpoints['modellogs'].format(self.project['id'])+'/'
         r = requests.post(url, json=training_data, headers=self.auth_headers, verify=self.secure_mode)
-        if not _check_status(r, error_msg="Failed to create training session log for {}".format(model)):
+        if not _check_status(r, error_msg="Failed to create training session log in Studio for {}".format(model)):
             return False
-<<<<<<< HEAD
-        print("Created training session log for {}".format(model))
-        return True
-
-=======
-        print("Created training log for {}".format(model))
-        return True
+        else:
+            print("Created training log for {}".format(model))
+            return True
 
 
->>>>>>> 49700d033eb963426cf01e1eaed71a96fd2fb446
     def predict(self, model, inp, version=None):
         if version:
             params = {'name': model, 'version': version}
