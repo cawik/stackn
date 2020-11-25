@@ -6,7 +6,8 @@ from studio.minio import MinioRepository, ResponseError
 from django.conf import settings as sett
 from projects.helpers import get_minio_keys
 from .forms import DatasheetForm
-
+from .helpers import create_pdf
+from .datasheet_questions import q
 
 @login_required
 def page(request, user, project, page_index):
@@ -117,7 +118,8 @@ def datasheet(request, user, project, page_index):
     if form.is_valid():
         datasheet_info.append(form.cleaned_data.get("q1"))
         datasheet_info.append(form.cleaned_data.get("q2"))
-        print(datasheet_info)
+        create_pdf(q, datasheet_info, "mnist_train")
+        
 
     datasets = []
     try:
