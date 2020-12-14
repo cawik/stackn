@@ -378,18 +378,18 @@ class DatasetList(generics.ListAPIView, GenericViewSet, CreateModelMixin, Retrie
     permission_classes = (IsAuthenticated, ProjectPermission, )
     serializer_class = DatasetSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['name', 'project_slug', 'version']
+    filterset_fields = ['name', 'project']
     def get_queryset(self):
         """
         This view should return a list of all the members
         of the project
         """
         project = Project.objects.get(pk=self.kwargs['project_pk'])
-        return Dataset.objects.filter(project_slug=project.slug)
+        return Dataset.objects.filter(project=project.name)
     
     def create(self, request, *args, **kwargs):
         project = Project.objects.get(id=self.kwargs['project_pk'])
-
+        """
         try:
             dataset_name = request.data['name']
             release_type = request.data['release_type']
@@ -407,6 +407,12 @@ class DatasetList(generics.ListAPIView, GenericViewSet, CreateModelMixin, Retrie
                 fobj = FileModel(name=fname, bucket=bucket)
                 fobj.save()
                 new_dataset.files.add(FileModel.objects.get(pk=fobj.pk))
+            new_dataset.save()
+        """
+        try:
+            dataset_name = request.data['name']
+            dataset_dvc = request.data['etag']
+            new_dataset = Dataset(name=dataset_name, project=project.name, dvc_etag=dataset_dvc)
             new_dataset.save()
         except Exception as err:
             print(err)
@@ -426,6 +432,25 @@ class DatasetList(generics.ListAPIView, GenericViewSet, CreateModelMixin, Retrie
             print('Failed')
             print(err)
             return HttpResponse('Failed to delete dataset', 400)
+    
+    @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated])
+    def update_instance(self, request, *args, **kwargs):
+        print("update_instance")
+        project = Project.objects.get(id=self.kwargs['project_pk'])
+
+        name = request.data['name']
+        print(name)
+        etag = request.data['etag']
+        dataset = Dataset.objects.get(project=project.name, name=name)
+        try:
+            dataset.dvc_etag = etag
+            dataset.save()
+            print('OK')
+            return HttpResponse('ok', 200)
+        except Exception as err:
+            print('Failed')
+            print(err)
+            return HttpResponse('Failed to update dataset', 400)
 
 class ProjectList(generics.ListAPIView, GenericViewSet, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin,
                   ListModelMixin):

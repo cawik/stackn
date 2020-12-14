@@ -75,13 +75,22 @@ class UserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username']
-
+"""
 class DatasetSerializer(ModelSerializer):
     class Meta:
         model = Dataset
         fields = ['id', 'name', 'version', 'release_type', 'description',
                   'bucket', 'project_slug', 'files', 'created_by', 'created_on', 'datasheet']
 
+class DatasheetSerializer(ModelSerializer):
+    class Meta:
+        model = Datasheet
+        fields = ['name', 'info']
+"""
+class DatasetSerializer(ModelSerializer):
+    class Meta:
+        model = Dataset
+        fields = ['project', 'name', 'dvc_etag', 'datasheet']
 
 class FileModelSerializer(ModelSerializer):
     class Meta:

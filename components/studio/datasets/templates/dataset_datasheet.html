@@ -15,7 +15,7 @@
         <h2>Datasheet</h2>
     </div>
     <div class="get-started-header">
-        <p>A datasheet is blblblbl</p>
+        <p>A datasheet is a standardized document used in order to provide information about the provenance, creation, and usage of a particular dataset. They serve to increase transparancy and to make it easier for new users of the dataset to avoid unwanted biases. Below can fill in a simplified version of a datasheet, or upload a complete version. You can read more about Datasheets for Datasets at: https://arxiv.org/abs/1803.09010</p>
     </div>
     <nav aria-label="breadcrumb" style="margin-bottom: 25px;">
         <ol class="breadcrumb">
@@ -26,7 +26,7 @@
             </li>
         </ol>
     </nav>
-    <form action="" method="post">
+    <form action="{% url 'datasets:page' request.user project.slug 1 %}" method="post">
         <!---
         <label for="q1" style="width: 52%"><b>What do the instances that comprise the dataset represent (e.g.,documents, photos, people, countries)?</b>
              Are there multiple types of instances (e.g., movies, users, and ratings; people and interactions between them; nodes and edges)? 
@@ -35,8 +35,63 @@
         <input type="submit" value="Submit">
         -->
         {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Submit">
+        {% spaceless %}
+            <div style="margin-top: 40px;">
+                {{ form.q0.error }}
+                <label style="display: block;">{{ form.q0.label }}</label>
+                {{ form.q0 }} 
+            </div> 
+            <div style="margin-top: 40px;" >
+                {{ form.q1.error }}
+                <label style="display: block;">{{ form.q1.label }}</label>
+                {{ form.q1 }}
+            </div>
+            <div style="margin-top: 40px;">
+                {{ form.q2.error }}
+                <label style="display: block;">{{ form.q2.label }}</label>
+                {{ form.q2 }}
+            </div>
+            <div style="margin-top: 40px;">
+                {{ form.q3.error }}
+                <label style="display: block;">{{ form.q3.label }}</label>
+                {{ form.q3 }}                
+            </div>
+            <div style="margin-top: 40px;">
+                {{ form.q4.error }}
+                <label style="display: block;">{{ form.q4.label }}</label>
+                {{ form.q4 }}                
+            </div>
+            <div style="margin-top: 40px;">
+                {{ form.q5.error }}
+                <label style="display: block;">{{ form.q5.label }}</label>
+                {{ form.q5 }} 
+            </div> 
+            <div style="margin-top: 40px;">
+                {{ form.q6.error }}
+                <label style="display: block;">{{ form.q6.label }}</label>
+                {{ form.q6 }}                
+            </div>
+            <div style="margin-top: 40px;">
+                {{ form.q7.error }}
+                <label style="display: block;">{{ form.q7.label }}</label>
+                {{ form.q7 }}                
+            </div>
+            <div style="margin-top: 40px;">
+                {{ form.q8.error }}
+                <label style="display: block;">{{ form.q8.label }}</label>
+                {{ form.q8 }}                
+            </div>
+            <div style="margin-top: 40px;">
+                {{ form.q9.error }}
+                <label style="display: block;">{{ form.q9.label }}</label>
+                {{ form.q9 }}                
+            </div>              
+            <div style="margin-top: 40px;">
+                <label style="display: block;">Upload datasheet: </label>
+                {{ form.upload }}                
+            </div>
+            <input type="submit" value="Submit" style="margin-top: 40px;">
+        {% endspaceless %}
     </form>
 </div>
 {% endblock %}

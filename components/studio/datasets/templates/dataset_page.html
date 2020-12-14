@@ -54,8 +54,8 @@
             <td><span class="oi oi-file"></span></td>
             <td>{{ entry.location }}</td>
             <td>{{ entry.name }}</td>
-            <td><a href="{%url 'datasets:datasheet' request.user project.slug 1 %}" class="btn mt-auto btn-info"
-                style="width: fit-content;">{{ entry.datasheet }}</a></td>
+            <td><a href="{%url 'datasets:datasheet' user project.slug 1 entry.name %}" class="btn mt-auto btn-info"
+                style="width: fit-content;">Datasheet</a></td>
             <td>{{ entry.size }} MB</td>
             <td>{{ entry.modified }}</td>
             {% endif %}

@@ -717,6 +717,41 @@ class StudioClient():
                      verify=self.secure_mode)
         print(res.json())
 
+    def manage_dvc(self, file):
+        print(self.get_dataset({"name": file}))
+        project = self.project
+        remote_name = '{}-remote'.format(self.stackn_config['active_project'])
+        remote_endpoint = 'https://{}-minio.{}/'.format(self.project_slug, self.token_config['studio_url'].replace('https://', '').replace('http://', '')) 
+        os.environ["AWS_ACCESS_KEY_ID"] = self.decrypt_key(project['project_key'])
+        os.environ["AWS_SECRET_ACCESS_KEY"] = self.decrypt_key(project['project_secret'])
+        
+        if not file:
+            args = [
+                ['dvc', 'init', '--no-scm'],
+                ['dvc', 'remote', 'add', '-d', remote_name, 's3://dataset'],
+                ['dvc', 'remote', 'modify', remote_name, 'endpointurl', remote_endpoint],
+                ['dvc', 'config', 'cache.s3', 's3cache'],
+                ['dvc', 'remote', 'add' ,'s3cache', 'remote://{}/cache'.format(remote_name)]
+            ]
+            for arg in args:
+                subprocess.run(arg)
+        else:
+            subprocess.run(['dvc', 'add', 'remote://{}/{}'.format(remote_name, file)])
+            with open('{}.dvc'.format(file)) as fp:
+                for i, line in enumerate(fp):
+                    if i == 1:
+                        if self.get_dataset({"name": file}):
+                            print("Updating dataset: ", file, "...")
+                            data = {"etag": line[8:].replace('\n', '')}
+                            url = self.endpoints['dataset'].format(self.project['id'])+'/update_instance/'
+                        else:
+                            print("Unable to find dataset: ", file, ". Creating new dataset...")
+                            data = {"name": file, "etag": line[8:].replace('\n', '')}
+                            url = self.endpoints['dataset'].format(self.project['id'])+'/'
+                        print(data)
+                        break
+            r = requests.post(url, json=data, headers=self.auth_headers, verify=self.secure_mode)
+
 if __name__ == '__main__':
 
     client = StudioClient()

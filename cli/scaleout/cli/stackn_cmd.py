@@ -101,7 +101,26 @@ def train_cmd(ctx, log_off, model, run_id, training_file, version):
 
 
 
-@main.command('test')
+@main.command('dvc')
+@click.option('--install', flag_value='install', default=False)
+@click.option('-f', '--file', required=False)
 @click.pass_context
-def test_cmd(ctx):
-    get_run_details('12')
+def dvc_cmd(ctx, file, install):
+    stackn_config, load_status = get_stackn_config()
+    if not load_status:
+        print('Failed to load STACKn config.')
+    else:
+        client = ctx.obj['CLIENT']
+        if install:
+            if not os.path.isdir('.dvc'):
+                if 'active_project' in stackn_config:
+                    client.manage_dvc(file)
+                else:
+                    print('No active project; create a new project or set an existing project.')
+            else:
+                print('DVC already set up.')
+        else:
+            if file:
+                client.manage_dvc(file)
+                
+                
