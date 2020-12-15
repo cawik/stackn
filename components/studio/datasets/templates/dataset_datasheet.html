@@ -37,19 +37,26 @@
         {% if not has_datasheet %}
         <form action="{% url 'datasets:submit' request.user project.slug 1 name %}" method="post">
             {% csrf_token %}
-            {% for q in questions %}
+
+            {% if form %}
+            {% for field in form %}
             <div class="form-group" style="margin-top:35px">
-                <label for="question">{{ q }}</label>
-                {% if form %}
+                <label for="question">{{ field.label }}</label>
                 <textarea type="text" name="q{{forloop.counter}}" rows="4" cols="60" class="form-control"
-                    id="q{{forloop.counter}}" aria-describedby="question">{{ form.q1.value }}</textarea>
-                {% else %}
-                <textarea type="text" name="q{{forloop.counter}}" rows="4" cols="60" class="form-control"
-                    id="q{{forloop.counter}}" aria-describedby="question"></textarea>
-                {% endif %}
+                    id="q{{forloop.counter}}" aria-describedby="question">{{ field.value }}</textarea>
                 <small id="question" class="form-text text-muted">Question {{ forloop.counter }}</small>
             </div>
             {% endfor %}
+            {% else %}
+            {% for q in questions %}
+            <div class="form-group" style="margin-top:35px">
+                <label for="question">{{ q }}</label>
+                <textarea type="text" name="q{{forloop.counter}}" rows="4" cols="60" class="form-control"
+                    id="q{{forloop.counter}}" aria-describedby="question"></textarea>
+                <small id="question" class="form-text text-muted">Question {{ forloop.counter }}</small>
+            </div>
+            {% endfor %}
+            {% endif %}
             <button type="submit" class="btn btn-primary" style="margin-top:35px">Submit</button>
         </form>
         {% else %}

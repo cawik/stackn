@@ -102,28 +102,12 @@ def path_page(request, user, project, path_name, page_index):
 
     return render(request, template, locals())
 
-#@login_required
-#def datasheet(request, user, project):
-    #template = 'dataset_datasheet.html'
-    """
-    project = Project.objects.filter(slug=project).first()
-    url_domain = sett.DOMAIN
-
-    minio_keys = get_minio_keys(project)
-    decrypted_key = minio_keys['project_key']
-    decrypted_secret = minio_keys['project_secret']
-    """
-
-    #return render(request, template, locals())
 
 @login_required
 def datasheet(request, user, project, page_index, name, action):
     template = 'dataset_datasheet.html'
     project = Project.objects.filter(slug=project).first()
     questions = datasheet_questions
-    #for i in range(0, len(datasheet_questions)):
-    #    questions[qformat(i+1)] = datasheet_questions[i]
-    
     if action == 'details':
         has_datasheet = True
         db_entry = Dataset.objects.get(project=project.slug, name=name)
@@ -139,9 +123,7 @@ def datasheet(request, user, project, page_index, name, action):
             initial['q{}'.format(counter)] = value
             counter += 1
         form = DatasheetForm(initial=initial)
-        indices = []
-        for i in range(1, len(initial) + 1):
-            indices.append("q{}".format(i))
+        print(form)
     return render(request, template, locals())
 
 
@@ -206,7 +188,6 @@ def submit(request, user, project, page_index, name):
         form = DatasheetForm(request.POST)
         if form.is_valid():
             print("Valid form! Saving")
-            print(request.POST)
             for i in range(0, len(datasheet_questions)):
                 question = datasheet_questions[i]
                 provided_answer = form.cleaned_data.get("q{}".format(i+1))
