@@ -1,7 +1,7 @@
-from fpdf import FPDF
+#from fpdf import FPDF
 import itertools
 from .forms import DatasheetForm
-
+"""
 def create_pdf(qa):
     pdf = FPDF()
     pdf.set_left_margin(35)
@@ -27,7 +27,7 @@ def create_pdf(qa):
         else:
             pdf.multi_cell(170, 5, txt="No answer provided.", border=1, align="L", fill=True)
     return pdf
-
+"""
 
 def upload_file(request, dataset):
     if request.method == 'POST':

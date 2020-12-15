@@ -26,41 +26,47 @@
             <li class="breadcrumb-item active" aria-current="page">
                 dataset
                 <img src="/static/icons/folder-check.svg" alt="" width="21" height="21" title="Bootstrap"
-                     style="padding-left: 3px;">
+                    style="padding-left: 3px;">
             </li>
         </ol>
     </nav>
     <table class="table table-hover">
         <thead>
-        <tr>
-            <th scope="col" style="width: 5%;text-align: center;"></th>
-            <th scope="col" style="width: 10%;text-align: left">Location</th>
-            <th scope="col" style="width: 35%;text-align: left">Name</th>
-            <th scope="col" style="width: 15%;text-align: left">Datasheet</th>
-            <th scope="col" style="width: 10%;text-align: left">Size</th>
-            <th scope="col" style="width: 15%;text-align: left">Last Modified</th>
-        </tr>
+            <tr>
+                <th scope="col" style="width: 5%;text-align: center;"></th>
+                <th scope="col" style="width: 10%;text-align: left">Location</th>
+                <th scope="col" style="width: 35%;text-align: left">Name</th>
+                <th scope="col" style="width: 15%;text-align: left">Datasheet</th>
+                <th scope="col" style="width: 10%;text-align: left">Size</th>
+                <th scope="col" style="width: 15%;text-align: left">Last Modified</th>
+            </tr>
         </thead>
         <tbody>
-        {% for entry in datasets %}
-        <tr>
-            {% if entry.is_dir %}
-            <td><span class="oi oi-folder"></span></td>
-            <td>{{ entry.location }}</td>
-            <td><a href="{% url 'datasets:path_page' user project.slug entry.name 1 %}">{{ entry.name }}</a></td>
-            <td>--</td>
-            <td>--</td>
-            {% else %}
-            <td><span class="oi oi-file"></span></td>
-            <td>{{ entry.location }}</td>
-            <td>{{ entry.name }}</td>
-            <td><a href="{%url 'datasets:datasheet' user project.slug 1 entry.name %}" class="btn mt-auto btn-info"
-                style="width: fit-content;">Datasheet</a></td>
+            {% for entry in datasets %}
+            <tr>
+                {% if entry.is_dir %}
+                <td><span class="oi oi-folder"></span></td>
+                <td>{{ entry.location }}</td>
+                <td><a href="{% url 'datasets:path_page' user project.slug entry.name 1 %}">{{ entry.name }}</a></td>
+                <td>--</td>
+                <td>--</td>
+                <td>--</td>
+                {% else %}
+                <td><span class="oi oi-file"></span></td>
+                <td>{{ entry.location }}</td>
+                <td>{{ entry.name }}</td>
+                {% if entry.datasheet %}
+                <td><a href="{%url 'datasets:datasheet' user project.slug 1 entry.name 'details' %}" class="btn mt-auto btn-info"
+                        style="width: fit-content;">Show</a></td>
+                {% else %}
+                <td><a href="{%url 'datasets:datasheet' user project.slug 1 entry.name 'create' %}" class="btn mt-auto btn-info"
+                        style="width: fit-content;">Create</a></td>
+                {% endif %}
             <td>{{ entry.size }} MB</td>
             <td>{{ entry.modified }}</td>
             {% endif %}
-        </tr>
-        {% endfor %}
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
     <nav aria-label="Datasets page navigation">

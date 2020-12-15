@@ -90,7 +90,7 @@ class DatasheetSerializer(ModelSerializer):
 class DatasetSerializer(ModelSerializer):
     class Meta:
         model = Dataset
-        fields = ['project', 'name', 'dvc_etag', 'datasheet']
+        fields = ['project', 'name', 'version_tag', 'datasheet']
 
 class FileModelSerializer(ModelSerializer):
     class Meta:

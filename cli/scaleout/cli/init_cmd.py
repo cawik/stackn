@@ -3,7 +3,6 @@ from .main import main
 import requests
 import os
 import tarfile
-import subprocess
 
 @main.command('init')
 
@@ -14,4 +13,3 @@ def init_cmd(ctx):
     import tarfile
     tf = tarfile.open(file_path)
     tf.extractall()
-    subprocess.run(["dvc", "init", "--no-scm"])

@@ -73,7 +73,7 @@ class Datasheet(models.Model):
 class Dataset(models.Model):
     project = models.CharField(max_length=255, default="")
     name = models.CharField(max_length=255)
-    dvc_etag = models.CharField(max_length=255, default="")
+    version_tag = models.CharField(max_length=255, default="", help_text="Tag that points to the data file")
     datasheet = models.TextField(blank=True)
     #datasheet_upload = models.FileField(upload_to='datasheets/')
 

@@ -114,13 +114,12 @@ def dvc_cmd(ctx, file, install):
         if install:
             if not os.path.isdir('.dvc'):
                 if 'active_project' in stackn_config:
-                    client.manage_dvc(file)
+                    client.manage_dvc('install')
                 else:
                     print('No active project; create a new project or set an existing project.')
             else:
-                print('DVC already set up.')
-        else:
-            if file:
-                client.manage_dvc(file)
+                print('DVC already installed in current directory.')
+        elif file and os.path.isdir('.dvc'):
+            client.manage_dvc(file)
                 
                 

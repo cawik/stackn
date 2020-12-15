@@ -8,6 +8,7 @@ import uuid
 from urllib.parse import urljoin
 from datetime import datetime
 from .details import get_run_details
+from scaleout.cli.helpers import prompt
 
 def _check_status(r,error_msg="Failed"):
     if (r.status_code < 200 or r.status_code > 299):
@@ -776,40 +777,66 @@ class StudioClient():
                      verify=self.secure_mode)
         print(res.json())
 
-    def manage_dvc(self, file):
-        print(self.get_dataset({"name": file}))
+
+    def manage_dvc(self, arg):
+        """ Install DVC and/or add file to remote """
+
         project = self.project
         remote_name = '{}-remote'.format(self.stackn_config['active_project'])
         remote_endpoint = 'https://{}-minio.{}/'.format(self.project_slug, self.token_config['studio_url'].replace('https://', '').replace('http://', '')) 
         os.environ["AWS_ACCESS_KEY_ID"] = self.decrypt_key(project['project_key'])
         os.environ["AWS_SECRET_ACCESS_KEY"] = self.decrypt_key(project['project_secret'])
         
-        if not file:
-            args = [
-                ['dvc', 'init', '--no-scm'],
+        if arg == 'install':
+            if subprocess.run(["git", "branch"], stderr=subprocess.STDOUT, stdout=open(os.devnull, 'w')) != 0:
+                subprocess.run(['dvc', 'init', '--no-scm']) 
+            else:
+                subprocess.run(['dvc', 'init'])
+            processes = [
                 ['dvc', 'remote', 'add', '-d', remote_name, 's3://dataset'],
                 ['dvc', 'remote', 'modify', remote_name, 'endpointurl', remote_endpoint],
                 ['dvc', 'config', 'cache.s3', 's3cache'],
                 ['dvc', 'remote', 'add' ,'s3cache', 'remote://{}/cache'.format(remote_name)]
             ]
-            for arg in args:
-                subprocess.run(arg)
+            try:
+                for process in processes:
+                    subprocess.run(process)
+            except Exception as e:
+                print("DVC setup failed.\n{}".format(e))
+                return False
+            return True
         else:
-            subprocess.run(['dvc', 'add', 'remote://{}/{}'.format(remote_name, file)])
-            with open('{}.dvc'.format(file)) as fp:
-                for i, line in enumerate(fp):
-                    if i == 1:
-                        if self.get_dataset({"name": file}):
-                            print("Updating dataset: ", file, "...")
-                            data = {"etag": line[8:].replace('\n', '')}
-                            url = self.endpoints['dataset'].format(self.project['id'])+'/update_instance/'
-                        else:
-                            print("Unable to find dataset: ", file, ". Creating new dataset...")
-                            data = {"name": file, "etag": line[8:].replace('\n', '')}
-                            url = self.endpoints['dataset'].format(self.project['id'])+'/'
-                        print(data)
-                        break
+            file_name = arg
+            try:
+                processes = [
+                    ['dvc', 'add', file_name],
+                    ['dvc', 'commit'],
+                    ['dvc', 'push'],
+                    ['dvc', 'add', 'remote://{}/{}'.format(remote_name, file_name)]
+                ]
+                for process in processes:
+                    subprocess.run(process)
+                #subprocess.run(['dvc', 'add', 'remote://{}/{}'.format(remote_name, file_name)])
+                with open('{}.dvc'.format(file_name)) as f:
+                    for i, line in enumerate(f):
+                        if i == 1:
+                            if self.get_dataset({"name": file_name}):
+                                print("Updating dataset {} in Studio database...".format(file_name))
+                                data = {"etag": line[8:].replace('\n', '')}
+                                url = self.endpoints['dataset'].format(self.project['id'])+'/update_instance/'
+                            else:
+                                print("Unable to find entry for dataset {} in Studio database. Creating new database entry...".format(file_name))
+                                data = {"name": file_name, "etag": line[8:].replace('\n', '')}
+                                url = self.endpoints['dataset'].format(self.project['id'])+'/'
+                            break
+            except Exception as e:
+                print("S3 File management failed.\n{}".format(e))
+                return False
             r = requests.post(url, json=data, headers=self.auth_headers, verify=self.secure_mode)
+            if not _check_status(r, error_msg="Failed to create dataset entry in database"):
+                return False
+            return True
+
 
 if __name__ == '__main__':
 

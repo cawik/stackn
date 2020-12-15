@@ -418,14 +418,14 @@ class DatasetList(generics.ListAPIView, GenericViewSet, CreateModelMixin, Retrie
     permission_classes = (IsAuthenticated, ProjectPermission, )
     serializer_class = DatasetSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['name', 'project']
+    filterset_fields = ['name', 'project_slug', 'version']
     def get_queryset(self):
         """
         This view should return a list of all the members
         of the project
         """
         project = Project.objects.get(pk=self.kwargs['project_pk'])
-        return Dataset.objects.filter(project=project.name)
+        return Dataset.objects.filter(project_slug=project.slug)
     
     def create(self, request, *args, **kwargs):
         project = Project.objects.get(id=self.kwargs['project_pk'])
@@ -452,7 +452,7 @@ class DatasetList(generics.ListAPIView, GenericViewSet, CreateModelMixin, Retrie
         try:
             dataset_name = request.data['name']
             dataset_dvc = request.data['etag']
-            new_dataset = Dataset(name=dataset_name, project=project.name, dvc_etag=dataset_dvc)
+            new_dataset = Dataset(name=dataset_name, project=project.slug, version_tag=dataset_dvc)
             new_dataset.save()
         except Exception as err:
             print(err)
@@ -483,7 +483,7 @@ class DatasetList(generics.ListAPIView, GenericViewSet, CreateModelMixin, Retrie
         etag = request.data['etag']
         dataset = Dataset.objects.get(project=project.name, name=name)
         try:
-            dataset.dvc_etag = etag
+            dataset.version_tag = etag
             dataset.save()
             print('OK')
             return HttpResponse('ok', 200)
