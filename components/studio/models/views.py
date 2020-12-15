@@ -4,8 +4,8 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from projects.models import Project, ProjectLog
 from reports.models import Report, ReportGenerator
-from .models import Model, ModelLog, Metadata
-from .forms import ModelForm
+from .models import Model, ModelLog, Metadata, ModelCard
+from .forms import ModelForm, ModelCardForm
 from reports.forms import GenerateReportForm
 from django.contrib.auth.decorators import login_required
 from deployments.models import DeploymentDefinition, DeploymentInstance
@@ -14,6 +14,7 @@ from reports.helpers import populate_report_by_id, get_download_link
 import markdown
 import ast
 from collections import defaultdict
+from .model_cards_questions import categories
 
 new_data = defaultdict(list)
 logger = logging.getLogger(__name__)
@@ -95,6 +96,7 @@ def details(request, user, project, id):
     model = Model.objects.filter(id=id).first()
     model_access_choices = ['PU', 'PR', 'LI']
     model_access_choices.remove(model.access)
+    has_card = ModelCard.objects.filter(project=project.name, model=model.name, model_version=model.version)
     deployments = DeploymentInstance.objects.filter(model=model)
 
     report_generators = ReportGenerator.objects.filter(project=project)
@@ -270,3 +272,61 @@ def delete(request, user, project, id):
         return HttpResponseRedirect(reverse('models:list', kwargs={'user':user, 'project':project.slug}))
 
     return render(request, template, locals())
+
+@login_required
+def card(request, user, project, id, action):
+    template = 'card.html'
+    card_categories = categories
+    project = Project.objects.get(slug=project)
+    model = Model.objects.get(id=id)
+    if action == 'create':
+        has_card = False
+    elif action == 'update':
+        has_card = True
+        initial = {}
+        db_entry = ModelCard.objects.get(project=project.name, model=model.name, model_version=model.version)
+        model_card = ast.literal_eval(db_entry.model_card)
+        """
+        for key, value in model_card.items():
+            provided_answers = {}
+            for q, answer in value.items():
+                provided_answers[q] = answer
+            initial[key] = provided_answers
+        print("Hej", initial)
+        form = ModelCardForm(initial=initial)
+        print(form)
+        """
+    return render(request, template, locals())
+
+@login_required
+def submit(request, user, project, id):
+    project = Project.objects.filter(slug=project).first()
+    model = Model.objects.filter(id=id).first()
+    print("Yes sir, i can boogie")
+    model_card_info = {}
+    if request.method == "POST":
+        form = ModelCardForm(request.POST)
+        if form.is_valid():
+            print("Valid form! Saving")
+            for key, value in categories.items():
+                provided_answers = {}
+                for q, question in value.items():
+                    answer = form.cleaned_data.get(q)
+                    provided_answers[question] = answer
+                model_card_info[key] = provided_answers
+            """
+            if ModelCard.objects.filter(project=project.name, model=model.name, model_version=model.version):
+                card_object = ModelCard.objects.get(project=project.name, model=model.name, model_version=model.version)
+            else:
+                card_object = ModelCard()
+                card_object.model = model.name
+                card_object.model_version = model.version
+                card_object.project = project.name
+            card_object.model_card = model_card_info
+            card_object.save()
+            """
+        else:
+            print("Invalid form. Redirecting back to models...")
+        return HttpResponseRedirect(
+            reverse('models:details', kwargs={'user': user, 'project': project.slug, 'id': id}))
+    return render(request, 'card.html', locals())

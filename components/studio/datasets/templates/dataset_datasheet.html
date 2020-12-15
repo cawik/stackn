@@ -11,13 +11,17 @@
         </ol>
     </nav>
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
-        <h2>Datasheet</h2>
+        <h2>Datasheet for {{ name }}</h2>
     </div>
     <div class="get-started-header">
         <p>A datasheet is a standardized document used in order to provide information about the provenance, creation,
             and usage of a particular dataset. They serve to increase transparancy and to make it easier for new users
             of the dataset to avoid unwanted biases. Below can fill in a simplified version of a datasheet, or upload a
             complete version. You can read more about Datasheets for Datasets at: https://arxiv.org/abs/1803.09010</p>
+        {% if has_datasheet %}
+        <p>Below you can see the answers provided on the datasheet for dataset {{ name }}. Press the button on the
+            bottom of the page to update the datasheet.</p>
+        {% endif %}
     </div>
     <div class="container-fluid">
         <!--
@@ -43,7 +47,8 @@
             <div class="form-group" style="margin-top:35px">
                 <label for="question">{{ field.label }}</label>
                 <textarea type="text" name="q{{forloop.counter}}" rows="4" cols="60" class="form-control"
-                    id="q{{forloop.counter}}" aria-describedby="question">{{ field.value }}</textarea>
+                    id="q{{forloop.counter}}"
+                    aria-describedby="question">{{ field.value|default_if_none:"" }}</textarea>
                 <small id="question" class="form-text text-muted">Question {{ forloop.counter }}</small>
             </div>
             {% endfor %}
@@ -63,12 +68,14 @@
         <form action="{%url 'datasets:datasheet' request.user project.slug 1 name 'update' %}" method="post">
             {% csrf_token %}
             {% for key, value in datasheet.items %}
-            <div class="form-group border-bottom" style="margin-top:35px">
+            {% if value %}
+            <div class="form-group border-bottom"
+                style="margin-top:35px; width: 1015px; padding: 10px; border: 1px solid #c8e1ff;">
                 <label for="question"><b>{{ key }}</b></label>
                 <p type="text" name="q{{forloop.counter}}" id="q{{forloop.counter}}" aria-describedby="question">
                     <i>{{value}}</i></p>
-                <!--<small id="question" class="form-text text-muted">Question {{ forloop.counter }}</small>-->
             </div>
+            {% endif %}
             {% endfor %}
             <button type="submit" class="btn btn-primary" style="margin-top:35px">Update datasheet</button>
         </form>

@@ -129,6 +129,15 @@ class Metadata(models.Model):
     class Meta:
         unique_together = ('run_id', 'trained_model')
 
+class ModelCard(models.Model):
+    model = models.CharField(max_length=32, default='')
+    model_version = models.CharField(max_length=32, default='')
+    project = models.CharField(max_length=32, default='')
+    model_card = models.TextField(max_length=1000, default='')
+
+    class Meta:
+        unique_together = ('model', 'project')
+
 
 @receiver(pre_save, sender=Model, dispatch_uid='model_pre_save_signal')
 def pre_save_model(sender, instance, using, **kwargs):

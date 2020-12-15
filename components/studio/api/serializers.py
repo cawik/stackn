@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 
-from models.models import Model, ModelLog, Metadata
+from models.models import Model, ModelLog, Metadata, ModelCard
 from reports.models import Report, ReportGenerator
 from projects.models import Project, Volume
 from deployments.models import DeploymentInstance, DeploymentDefinition
@@ -27,6 +27,13 @@ class MetadataSerializer(ModelSerializer):
         model = Metadata
         fields = (
             'id', 'run_id', 'trained_model', 'project', 'model_details', 'parameters', 'metrics')
+
+
+class ModelCardSerializer(ModelSerializer):
+    class Meta:
+        model = ModelCard
+        fields = (
+            'model', 'model_version', 'project', 'model_card')
 
 
 class DeploymentDefinitionSerializer(ModelSerializer):

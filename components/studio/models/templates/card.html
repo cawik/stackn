@@ -1,0 +1,42 @@
+{% extends 'baseproject.html' %}
+{% block content %}
+<div class="col-md-9">
+    <nav aria-label="breadcrumb" class="project-breadcrumb-nav">
+        <ol class="breadcrumb project-breadcrumb-ol">
+            <li class="breadcrumb-item active" aria-current="page">Models</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{{ model.name }}</li>
+            <li class="breadcrumb-item">Card</li>
+        </ol>
+    </nav>
+    <div
+        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h2>Model card for {{ model.name }} {{ model.version }}</h2>
+    </div>
+
+    <div class="container-fluid">
+        <form action="{% url 'models:submit' request.user project.slug model.id %}" method="post">
+            {% csrf_token %}
+            {% for key, value in card_categories.items %}
+            <div class="col-sm-15" style="margin-top:35px">
+                <button type="button" class="btn btn-info" data-toggle="collapse"
+                    data-target="#demo{{ forloop.counter }}"
+                    style="width: 100%; height: 7%; color: #000000; border-color: #c8e1ff; background-color: #c8e1ff">{{ forloop.counter }}.
+                    {{ key }}</button>
+                <div id="demo{{ forloop.counter }}" class="collapse">
+                    {% for q, question in value.items %}
+                    <div class="form-group" style="margin-top:35px">
+                        <textarea type="text" name="{{ q }}" rows="2" cols="80" class="form-control"
+                            aria-describedby="question" placeholder="{{ question }}"></textarea>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary" style="margin-top:35px">Create model card</button>
+        </form>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</div>
+{% endblock %}

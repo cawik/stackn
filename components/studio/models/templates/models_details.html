@@ -27,6 +27,10 @@
                 aria-selected="false">Performance</a>
         </li>
         <li class="nav-item">
+            <a class="nav-link" id="card-tab" data-toggle="tab" href="#card" role="tab" aria-controls="card"
+                aria-selected="false">Model Card</a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link" id="readme-tab" data-toggle="tab" href="#readme" role="tab" aria-controls="readme"
                 aria-selected="false">README.md</a>
         </li>
@@ -317,7 +321,7 @@
                     <p style="margin-top: -20px"><b>For run with ID: </b><text id="id_min"></text></p>
                 </div>
                 <div class="col-sm-6">
-        
+
                 </div>
             </div>
             <script type="text/javascript" src="{% static 'js/Chart.min.js' %}"></script>
@@ -391,6 +395,22 @@
                 var element = document.getElementById("metricList");
                 element.onchange = updateChart;
             </script>
+        </div>
+        <div class="tab-pane fade" id="card" role="tabpanel" aria-labelledby="card-tab">
+            <div class="get-started-header">
+                <p>A Model Card is a ...</p>
+            </div>
+            {% if not has_card %}
+            <div class="container-fluid" style="margin-top: 35px">
+                <a href="{% url 'models:card' request.user project.slug model.id 'create' %}" class="btn mt-auto btn-info"
+                    style="width: fit-content;">Create model card</a>
+            </div>
+            {% else %}
+            <div class="container-fluid" style="margin-top: 35px">
+                <a href="{% url 'models:card' request.user project.slug model.id 'update' %}" class="btn mt-auto btn-info"
+                    style="width: fit-content;">Update model card</a>
+            </div>
+            {% endif %}
         </div>
         <div class="tab-pane fade" id="readme" role="tabpanel" aria-labelledby="readme-tab">
             {% if not readme %}
