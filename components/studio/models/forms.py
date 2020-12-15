@@ -1,7 +1,6 @@
 from django import forms
 from .models import Model, ModelLog, Metadata, ModelCard
-from .model_cards_questions import categories, questions_1, questions_2, questions_3, questions_4, questions_5, questions_6
-
+#from .model_cards_questions import categories, questions_1, questions_2, questions_3, questions_4, questions_5, questions_6
 
 class ModelForm(forms.ModelForm):
     class Meta:
@@ -27,6 +26,29 @@ class Metadata(forms.ModelForm):
 
 
 class ModelCardForm(forms.ModelForm):
+    q1 = forms.CharField(max_length=500, required= False)
+    q2 = forms.CharField(max_length=500, required= False)
+    q3 = forms.CharField(max_length=500, required= False)
+    q4 = forms.CharField(max_length=500, required= False)
+    q5 = forms.CharField(max_length=500, required= False)
+    q6 = forms.CharField(max_length=500, required= False)
+    q7 = forms.CharField(max_length=500, required= False)
+    q8 = forms.CharField(max_length=500, required= False)
+    q9 = forms.CharField(max_length=500, required= False)
+    q10 = forms.CharField(max_length=500, required= False)
+    q11 = forms.CharField(max_length=500, required= False)
+    q12 = forms.CharField(max_length=500, required= False)
+    q13 = forms.CharField(max_length=500, required= False)
+    q14 = forms.CharField(max_length=500, required= False)
+    q15 = forms.CharField(max_length=500, required= False)
+    q16 = forms.CharField(max_length=500, required= False)
+    q17 = forms.CharField(max_length=500, required= False)
+
+    class Meta:
+        model = ModelCard
+        fields = ('q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'q9','q10', 'q11', 'q12', 'q13', 'q14', 'q15', 'q16', 'q17')
+
+    """
     c1 = forms.CharField(label=list(categories)[0], max_length=500, required= False)
     c2 = forms.CharField(label=list(categories)[1], max_length=500, required= False)
     c3 = forms.CharField(label=list(categories)[2], max_length=500, required= False)
@@ -72,3 +94,4 @@ class ModelCardForm(forms.ModelForm):
             'q51',
             'q61'
         )
+    """

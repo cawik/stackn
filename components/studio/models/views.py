@@ -14,7 +14,7 @@ from reports.helpers import populate_report_by_id, get_download_link
 import markdown
 import ast
 from collections import defaultdict
-from .model_cards_questions import categories
+from .model_cards_questions import sections
 
 new_data = defaultdict(list)
 logger = logging.getLogger(__name__)
@@ -276,7 +276,6 @@ def delete(request, user, project, id):
 @login_required
 def card(request, user, project, id, action):
     template = 'card.html'
-    card_categories = categories
     project = Project.objects.get(slug=project)
     model = Model.objects.get(id=id)
     if action == 'create':
@@ -286,6 +285,14 @@ def card(request, user, project, id, action):
         initial = {}
         db_entry = ModelCard.objects.get(project=project.name, model=model.name, model_version=model.version)
         model_card = ast.literal_eval(db_entry.model_card)
+        counter = 1
+        for key, value in model_card.items():
+            initial['q{}'.format(counter)] = value
+            counter += 1
+        form = ModelCardForm(initial=initial)
+        print(form)
+        
+        
         """
         for key, value in model_card.items():
             provided_answers = {}
@@ -302,19 +309,15 @@ def card(request, user, project, id, action):
 def submit(request, user, project, id):
     project = Project.objects.filter(slug=project).first()
     model = Model.objects.filter(id=id).first()
-    print("Yes sir, i can boogie")
     model_card_info = {}
     if request.method == "POST":
         form = ModelCardForm(request.POST)
         if form.is_valid():
             print("Valid form! Saving")
-            for key, value in categories.items():
-                provided_answers = {}
-                for q, question in value.items():
-                    answer = form.cleaned_data.get(q)
-                    provided_answers[question] = answer
-                model_card_info[key] = provided_answers
-            """
+            for i in range(0, len(sections)):
+                question = sections[i]
+                provided_answer = form.cleaned_data.get("q{}".format(i+1))
+                model_card_info[question] = provided_answer
             if ModelCard.objects.filter(project=project.name, model=model.name, model_version=model.version):
                 card_object = ModelCard.objects.get(project=project.name, model=model.name, model_version=model.version)
             else:
@@ -324,7 +327,6 @@ def submit(request, user, project, id):
                 card_object.project = project.name
             card_object.model_card = model_card_info
             card_object.save()
-            """
         else:
             print("Invalid form. Redirecting back to models...")
         return HttpResponseRedirect(
