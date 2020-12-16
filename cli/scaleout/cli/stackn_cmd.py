@@ -98,28 +98,4 @@ def train_cmd(ctx, log_off, model, run_id, training_file, version):
         current_dir = os.getcwd()
         print("Could not start a training session. Check that you have initialized a model "\
             + "in '{}' and that the file '{}' exists.".format(current_dir, training_file))    
-
-
-
-@main.command('dvc')
-@click.option('--install', flag_value='install', default=False)
-@click.option('-f', '--file', required=False)
-@click.pass_context
-def dvc_cmd(ctx, file, install):
-    stackn_config, load_status = get_stackn_config()
-    if not load_status:
-        print('Failed to load STACKn config.')
-    else:
-        client = ctx.obj['CLIENT']
-        if install:
-            if not os.path.isdir('.dvc'):
-                if 'active_project' in stackn_config:
-                    client.manage_dvc('install')
-                else:
-                    print('No active project; create a new project or set an existing project.')
-            else:
-                print('DVC already installed in current directory.')
-        elif file and os.path.isdir('.dvc'):
-            client.manage_dvc(file)
-                
                 
