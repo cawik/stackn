@@ -1,15 +1,18 @@
-#from fpdf import FPDF
+from fpdf import FPDF
 import itertools
 from .forms import DatasheetForm
-"""
-def create_pdf(qa):
+
+def create_pdf(qa, name):
     pdf = FPDF()
     pdf.set_left_margin(35)
     pdf.add_page()
+    pdf.set_fill_color(243, 243, 243)
+    pdf.rect(0 , 0 , 30, 297 ,'F')
+    pdf.image('./static/img/stackn.png', 3, 3, 25)
     pdf.add_font('IBMPlexSans', '', './static/fonts/IBMPlexSans-Regular.ttf', uni=True)
     pdf.add_font('IBMPlexSans-Light', '' , './static/fonts/IBMPlexSans-Light.ttf', uni=True)
     pdf.set_font("IBMPlexSans", size=18)
-    pdf.cell(170, 15, txt="Datasheet", ln=1, align="L")
+    pdf.cell(170, 15, txt="Datasheet for dataset: {}".format(name[10:]), ln=1, align="L")
     pdf.set_draw_color(224, 238, 255)
     pdf.set_fill_color(241, 248, 255)
     pdf.set_font('IBMPlexSans-Light', size=8)
@@ -27,17 +30,7 @@ def create_pdf(qa):
         else:
             pdf.multi_cell(170, 5, txt="No answer provided.", border=1, align="L", fill=True)
     return pdf
-"""
-
-def upload_file(request, dataset):
-    if request.method == 'POST':
-        form = DatasheetForm(request.POST, request.FILES)
-        if form.is_valid:
-            handle_file(request.FILES['upload'], dataset)
-        else:
-            form = DatasheetForm()
-
-def handle_file(f, dataset):
-    with open('datasheets/datasheet_{}'.format(dataset), 'wb+') as destination:
-        for chunk in f.chunks:
-            destination.wirte(chunk)
+    
+    
+    
+    

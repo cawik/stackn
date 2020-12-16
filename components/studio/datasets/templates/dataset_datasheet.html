@@ -63,6 +63,7 @@
             {% endfor %}
             {% endif %}
             <button type="submit" class="btn btn-primary" style="margin-top:35px">Submit</button>
+            <button type="submit" class="btn btn-primary" style="margin-top:35px" name="pdf">Submit and generate pdf</button>
         </form>
         {% else %}
         <form action="{%url 'datasets:datasheet' request.user project.slug 1 name 'update' %}" method="post">
