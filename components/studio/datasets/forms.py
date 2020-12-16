@@ -12,7 +12,7 @@ class DatasheetForm(forms.Form):
     q7 = forms.CharField(label=datasheet_questions[6], max_length=500, required= False)
     q8 = forms.CharField(label=datasheet_questions[7], max_length=500, required= False)
     q9 = forms.CharField(label=datasheet_questions[8], max_length=500, required= False)
-    upload = forms.FileField(label="Upload Datasheet", required=False)
+    #upload = forms.FileField(label="Upload Datasheet", required=False)
     class Meta:
         model = Dataset
         fields = ('q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'q9')

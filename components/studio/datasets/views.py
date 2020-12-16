@@ -1,18 +1,18 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, FileResponse, Http404
 from django.core.files import File
 from projects.models import Project
 from studio.minio import MinioRepository, ResponseError
 from django.conf import settings as sett
 from projects.helpers import get_minio_keys
 from .forms import DatasheetForm
-#from .helpers import create_pdf, upload_file
+from .helpers import create_pdf
 from .models import Dataset
 from .datasheet_questions import datasheet_questions
 from django.urls import reverse
 import ast
-#from fpdf import FPDF
+from fpdf import FPDF
 
 @login_required
 def page(request, user, project, page_index):
@@ -200,8 +200,19 @@ def submit(request, user, project, page_index, name):
                 dataset.project = project
             dataset.datasheet = datasheet_info
             dataset.save()
+            if 'pdf' in request.POST:
+                print("Generating pdf...")
+                pdf = create_pdf(datasheet_info, name)
+                pdf.output('{}.pdf'.format(name))
+                return pdf_view(request, '{}.pdf'.format(name))            
         else:
             print("Invalid form. Redirecting back to datasets...")
         return HttpResponseRedirect(
             reverse('datasets:page', kwargs={'user': request.user, 'project': project, 'page_index': 1}))
     return render(request, 'dataset_datasheet.html', locals())
+
+def pdf_view(request, file):
+    try:
+        return FileResponse(open(file, 'rb'), content_type='application/pdf')
+    except FileNotFoundError:
+        raise Http404()
