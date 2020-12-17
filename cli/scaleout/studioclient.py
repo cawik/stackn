@@ -184,6 +184,7 @@ class StudioClient():
     def set_project(self, project_name):
         # Set active project
         stackn_config, load_status = sauth.get_stackn_config()
+        project = self.project
         if not load_status:
             print('Failed to load STACKn config.')
             return False
@@ -198,6 +199,7 @@ class StudioClient():
                 os.makedirs(project_dir)
             # Fetch and write project settings file
             print('Writing new project config file.')
+            print(self.get_repository(), "hej")
             project = self.get_projects({'name': project_name})
             status = dump_to_file(project, project_name, project_dir)
             if not status:

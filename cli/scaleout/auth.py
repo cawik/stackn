@@ -147,9 +147,7 @@ def get_token(client_id='studio-api', realm='STACKn', secure=True):
     return access_token, token_config
 
 
-
 def login(client_id='studio-api', realm='STACKn', deployment=[], keycloak_host=[], studio_host=[], username=[], secure=True):
-    """ Login to Studio services. """
     if not deployment:
         deployment = input('Name: ')
     if not studio_host:
