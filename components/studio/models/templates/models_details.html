@@ -408,21 +408,19 @@
             {% else %}
             <div class="container-fluid" style="margin-top: 35px">
                 <div class="row">
-                    <div class="col">
+                    <div class="col" style="margin-top:10px; margin: 10px; padding: 10px; border: 1px solid #c8e1ff;">
                         <ul>
                             {% for key, value in model_card.items %}
                             <li>{{ key }}: {{ value }}</li>
                             {% endfor %}
                         </ul>
                     </div>
-                    <div class="col">
-                        <div class="col">
-                            <ul>
-                                {% for key, value in model_card.items %}
-                                <li>{{ key }}: {{ value }}</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
+                    <div class="col" style="margin-top:10px; margin: 10px; padding: 10px; border: 1px solid #c8e1ff;">
+                        <ul>
+                            {% for key, value in model_card.items %}
+                            <li>{{ key }}: {{ value }}</li>
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
 

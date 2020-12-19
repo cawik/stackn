@@ -320,7 +320,7 @@ def submit(request, user, project, id):
                 card_object = ModelCard.objects.get(project=project.name, model=model.name, model_version=model.version)
                 print("A model card exists for current model. Updating existing model card...")
             except Exception as e:
-                print("No model card exists for current model. Populating a new model card...")
+                print("Error '{}' raised since no model card exists for current model. Populating a new model card...".format(e))
                 card_object = ModelCard()
                 card_object.model = model.name
                 card_object.model_version = model.version
