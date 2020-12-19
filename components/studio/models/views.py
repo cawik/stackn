@@ -96,7 +96,7 @@ def details(request, user, project, id):
     model = Model.objects.filter(id=id).first()
     model_access_choices = ['PU', 'PR', 'LI']
     model_access_choices.remove(model.access)
-    has_card = ModelCard.objects.filter(project=project.name, model=model.name, model_version=model.version)
+    #has_card = ModelCard.objects.filter(project=project.name, model=model.name, model_version=model.version)
     deployments = DeploymentInstance.objects.filter(model=model)
 
     report_generators = ReportGenerator.objects.filter(project=project)
@@ -167,6 +167,12 @@ def details(request, user, project, id):
     if md_objects:
         metrics = get_chart_data(md_objects)
 
+    try:
+        card_obj = ModelCard.objects.get(project=project.name, model=model, model_version=model.version)
+        model_card = ast.literal_eval(card_obj.model_card)
+    except Exception as e:
+        print("No model card has been created for this model.")
+
     filename = None
     readme = None
     import requests as r
@@ -184,6 +190,7 @@ def details(request, user, project, id):
         logger.error("Failed to get response from {} with error: {}".format(url, e))
 
     return render(request, 'models_details.html', locals())
+
 
 def get_chart_data(md_objects):
     new_data.clear()
@@ -280,6 +287,9 @@ def card(request, user, project, id, action):
     model = Model.objects.get(id=id)
     if action == 'create':
         has_card = False
+        initial = {}
+        form = ModelCardForm()
+    
     elif action == 'update':
         has_card = True
         initial = {}
@@ -290,19 +300,7 @@ def card(request, user, project, id, action):
             initial['q{}'.format(counter)] = value
             counter += 1
         form = ModelCardForm(initial=initial)
-        print(form)
-        
-        
-        """
-        for key, value in model_card.items():
-            provided_answers = {}
-            for q, answer in value.items():
-                provided_answers[q] = answer
-            initial[key] = provided_answers
-        print("Hej", initial)
-        form = ModelCardForm(initial=initial)
-        print(form)
-        """
+
     return render(request, template, locals())
 
 @login_required
@@ -318,15 +316,18 @@ def submit(request, user, project, id):
                 question = sections[i]
                 provided_answer = form.cleaned_data.get("q{}".format(i+1))
                 model_card_info[question] = provided_answer
-            if ModelCard.objects.filter(project=project.name, model=model.name, model_version=model.version):
+            try: 
                 card_object = ModelCard.objects.get(project=project.name, model=model.name, model_version=model.version)
-            else:
+                print("A model card exists for current model. Updating existing model card...")
+            except Exception as e:
+                print("No model card exists for current model. Populating a new model card...")
                 card_object = ModelCard()
                 card_object.model = model.name
                 card_object.model_version = model.version
                 card_object.project = project.name
             card_object.model_card = model_card_info
             card_object.save()
+            print("Model card saved for {} {}".format(model.name, model.version))
         else:
             print("Invalid form. Redirecting back to models...")
         return HttpResponseRedirect(

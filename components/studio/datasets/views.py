@@ -12,7 +12,7 @@ from .models import Dataset
 from .datasheet_questions import datasheet_questions
 from django.urls import reverse
 import ast
-from fpdf import FPDF
+#from fpdf import FPDF
 
 @login_required
 def page(request, user, project, page_index):

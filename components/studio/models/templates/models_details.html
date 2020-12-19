@@ -400,15 +400,36 @@
             <div class="get-started-header">
                 <p>A Model Card is a ...</p>
             </div>
-            {% if not has_card %}
+            {% if not model_card %}
             <div class="container-fluid" style="margin-top: 35px">
-                <a href="{% url 'models:card' request.user project.slug model.id 'create' %}" class="btn mt-auto btn-info"
-                    style="width: fit-content;">Create model card</a>
+                <a href="{% url 'models:card' request.user project.slug model.id 'create' %}"
+                    class="btn mt-auto btn-info" style="width: fit-content;">Create model card</a>
             </div>
             {% else %}
             <div class="container-fluid" style="margin-top: 35px">
-                <a href="{% url 'models:card' request.user project.slug model.id 'update' %}" class="btn mt-auto btn-info"
-                    style="width: fit-content;">Update model card</a>
+                <div class="row">
+                    <div class="col">
+                        <ul>
+                            {% for key, value in model_card.items %}
+                            <li>{{ key }}: {{ value }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <div class="col">
+                            <ul>
+                                {% for key, value in model_card.items %}
+                                <li>{{ key }}: {{ value }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 35px">
+                    <a href="{% url 'models:card' request.user project.slug model.id 'update' %}"
+                        class="btn mt-auto btn-info" style="width: fit-content;">Update model card</a>
+                </div>
             </div>
             {% endif %}
         </div>

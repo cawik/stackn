@@ -134,7 +134,15 @@ class ModelCard(models.Model):
     model_version = models.CharField(max_length=32, default='')
     project = models.CharField(max_length=32, default='')
     model_card = models.TextField(max_length=1000, default='')
-
+    """
+    model_details = models.TextField(max_length=1000, default='')
+    intended_uses = models.TextField(max_length=1000, default='')
+    factors = models.TextField(max_length=1000, default='')
+    metrics = models.TextField(max_length=1000, default='')
+    ethical_consideration = models.TextField(max_length=1000, default='')
+    caveats_and_recommendations = models.TextField(max_length=1000, default='')
+    """
+    
     class Meta:
         unique_together = ('model', 'project')
 

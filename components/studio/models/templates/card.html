@@ -8,19 +8,30 @@
             <li class="breadcrumb-item active" aria-current="page">Models</a>
             </li>
             <li class="breadcrumb-item active" aria-current="page">{{ model.name }}</li>
-            <li class="breadcrumb-item">Create card</li>
+            <li class="breadcrumb-item">
+                {% if not model_card %}
+                Create card
+                {% else %}
+                Update card
+                {% endif %}
+            </li>
         </ol>
     </nav>
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+        {% if not model_card %}
         <h2>Prepare card for {{ model.name }} {{ model.version }}</h2>
+        {% else %}
+        <h2>Update card for {{ model.name }} {{ model.version }}</h2>
+        {% endif %}
     </div>
     <div class="get-started-header">
-        <p>Prepare a model card by providing answers to a number of answers to the questions
+        <p>Prepare a model card <b>{{ model.name }}
+                {{ model.version }}</b> by providing answers to a number of answers to the questions
             specified under the sections below. Press the button in the "Assign" column to see the fields that you can
             fill in for each section.</p>
         <p>When you are satisfied with your model card, press the blue button at the bottom of the page. The information
-            that you have provided will be visible under the "Model Cards" tab on the page for <b>{{ model.name }}
-                {{ model.version }}</b>. Remember that you can revisit this page at a later stage to update your model
+            that you have provided will be visible under the "Model Cards" tab on the details page for {{ model.name }}
+            {{ model.version }}. Remember that you can revisit this page at a later stage to update your model
             card with new information.</p>
     </div>
     <div class="container-fluid" style="margin-top: 35px">
@@ -40,21 +51,21 @@
                             <div id="section1" class="collapse">
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="q1" id="q1" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%"></textarea>
+                                        aria-describedby="question" style="width:90%">{{form.q1.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Person or organization developing model
                                     </small>
                                 </div>
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="q2" id="q2" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%"></textarea>
+                                        aria-describedby="question" style="width:90%">{{form.q2.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Model type
                                     </small>
                                 </div>
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="q3" id="q3" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%"></textarea>
+                                        aria-describedby="question" style="width:90%">{{form.q3.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Information about training algorithms, parameters, fairness constraints
                                         or
@@ -64,28 +75,28 @@
                                 </div>
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="q4" id="q4" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%"></textarea>
+                                        aria-describedby="question" style="width:90%">{{form.q4.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Paper or other resource for more information
                                     </small>
                                 </div>
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="q5" id="q5" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%"></textarea>
+                                        aria-describedby="question" style="width:90%">{{form.q5.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Citation details
                                     </small>
                                 </div>
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="q6" id="q6" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%"></textarea>
+                                        aria-describedby="question" style="width:90%">{{form.q6.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         License
                                     </small>
                                 </div>
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="q7" id="q7" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%"></textarea>
+                                        aria-describedby="question" style="width:90%">{{form.q7.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Where to send questions or comments about the model
                                     </small>
@@ -124,21 +135,21 @@
                             <div id="section2" class="collapse">
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="q8" id="q8" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%"></textarea>
+                                        aria-describedby="question" style="width:90%">{{form.q8.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Primary intended uses
                                     </small>
                                 </div>
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="q9" id="q9" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%"></textarea>
+                                        aria-describedby="question" style="width:90%">{{form.q9.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Primary intended users
                                     </small>
                                 </div>
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="q10" id="q10" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%"></textarea>
+                                        aria-describedby="question" style="width:90%">{{form.q10.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Out-of-scope use cases
                                     </small>
@@ -179,14 +190,14 @@
                             <div id="section3" class="collapse">
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="q11" id="q11" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%"></textarea>
+                                        aria-describedby="question" style="width:90%">{{form.q11.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Relevant factors
                                     </small>
                                 </div>
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="q12" id="q12" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%"></textarea>
+                                        aria-describedby="question" style="width:90%">{{form.q12.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Evaluation factors
                                     </small>
@@ -219,21 +230,21 @@
                             <div id="section4" class="collapse">
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="q13" id="q13" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%"></textarea>
+                                        aria-describedby="question" style="width:90%">{{form.q13.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Model performance measures
                                     </small>
                                 </div>
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="q14" id="q14" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%"></textarea>
+                                        aria-describedby="question" style="width:90%">{{form.q14.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Decision thresholds
                                     </small>
                                 </div>
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="q15" id="q15" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%"></textarea>
+                                        aria-describedby="question" style="width:90%">{{form.q15.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Variation approaches
                                     </small>
@@ -274,7 +285,7 @@
                             <div id="section5" class="collapse">
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="q16" id="q16" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%"></textarea>
+                                        aria-describedby="question" style="width:90%">{{form.q16.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Ethical Considerations
                                     </small>
@@ -299,7 +310,7 @@
                             <div id="section6" class="collapse">
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="q17" id="q17" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%"></textarea>
+                                        aria-describedby="question" style="width:90%">{{form.q17.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Cavetats and Recommendations
                                     </small>
@@ -321,9 +332,15 @@
                     </tr>
                 </tbody>
             </table>
+            {% if not has_card %}
             <button type="submit" class="btn btn-primary" style="margin-top:45px;">
                 Create model card
             </button>
+            {% else %}
+            <button type="submit" class="btn btn-primary" style="margin-top:45px;">
+                Update model card
+            </button>
+            {% endif %}
         </form>
     </div>
     <!--
