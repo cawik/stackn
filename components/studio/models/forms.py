@@ -26,24 +26,42 @@ class Metadata(forms.ModelForm):
 
 
 class ModelCardForm(forms.ModelForm):
-    q1 = forms.CharField(max_length=500, required=False)
-    q2 = forms.CharField(max_length=500, required=False)
-    q3 = forms.CharField(max_length=500, required=False)
-    q4 = forms.CharField(max_length=500, required=False)
-    q5 = forms.CharField(max_length=500, required=False)
-    q6 = forms.CharField(max_length=500, required=False)
-    q7 = forms.CharField(max_length=500, required=False)
-    q8 = forms.CharField(max_length=500, required=False)
-    q9 = forms.CharField(max_length=500, required=False)
-    q10 = forms.CharField(max_length=500, required=False)
-    q11 = forms.CharField(max_length=500, required=False)
-    q12 = forms.CharField(max_length=500, required=False)
-    q13 = forms.CharField(max_length=500, required=False)
-    q14 = forms.CharField(max_length=500, required=False)
-    q15 = forms.CharField(max_length=500, required=False)
-    q16 = forms.CharField(max_length=500, required=False)
-    q17 = forms.CharField(max_length=500, required=False)
+    # md as in "Model Details"; represents the questions defined in model_details in model_cards_questions.py
+    md_1 = forms.CharField(max_length=500, required=False)
+    md_2 = forms.CharField(max_length=500, required=False)
+    md_3 = forms.CharField(max_length=500, required=False)
+    md_4 = forms.CharField(max_length=500, required=False)
+    md_5 = forms.CharField(max_length=500, required=False)
+    md_6 = forms.CharField(max_length=500, required=False)
+    md_7 = forms.CharField(max_length=500, required=False)
+
+    # iu as in "Intended Uses"; represents the questions defined in intended_use in model_cards_questions.py
+    iu_1 = forms.CharField(max_length=500, required=False)
+    iu_2 = forms.CharField(max_length=500, required=False)
+    iu_3 = forms.CharField(max_length=500, required=False)
+
+    # f as in "Factors"; represents the questions defined in factors in model_cards_questions.py
+    f_1 = forms.CharField(max_length=500, required=False)
+    f_2 = forms.CharField(max_length=500, required=False)
+
+    # m as in "Metrics"; represents the questions defined in metrics in model_cards_questions.py
+    m_1 = forms.CharField(max_length=500, required=False)
+    m_2 = forms.CharField(max_length=500, required=False)
+    m_3 = forms.CharField(max_length=500, required=False)
+
+    # ec as in "Ethical Considerations"; represents the questions defined in metrics in model_cards_questions.py
+    ec = forms.CharField(max_length=500, required=False)
+
+    # cr as in "Caveats and Recommendations"; represents the questions defined in metrics in model_cards_questions.py
+    cr = forms.CharField(max_length=500, required=False)
 
     class Meta:
         model = ModelCard
-        fields = ('q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'q9','q10', 'q11', 'q12', 'q13', 'q14', 'q15', 'q16', 'q17')
+        fields = (
+                'md_1', 'md_2', 'md_3', 'md_4', 'md_5', 'md_6', 'md_7', 
+                'iu_1', 'iu_2','iu_3', 
+                'f_1', 'f_2', 
+                'm_1', 'm_2', 'm_3', 
+                'ec', 
+                'cr'
+        )

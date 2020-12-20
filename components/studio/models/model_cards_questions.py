@@ -1,6 +1,6 @@
 # Questions for model cards. If questions are added here you must also modify ModelCardForm in models/forms.py
 
-section_1 = [
+model_details = [
     "Person or organization developing model",
     "Model type", 
     "Information about training algorithms, parameters, fairness constraints or other applied approaches, and features",
@@ -10,29 +10,29 @@ section_1 = [
     "Where to send questions or comments about the model"
 ]
 
-section_2 = [
+intended_use = [
     "Primary intended uses",
     "Primary intended users",
     "Out-of-scope use cases"
 ]
 
-section_3 = [
+model_factors = [
     "Relevant factors",
     "Evaluation factors"
 ]
 
-section_4 = [
+model_metrics = [
     "Model performance measures",
     "Decision thresholds",
     "Variation approaches"
 ]
 
-section_5 = [
+ethical_considerations = [
     "Ethical Considerations"
 ]
 
-section_6 = [
+model_caveats = [
     "Caveats and Recommendations"
 ]
 
-sections = section_1 + section_2 + section_3 + section_4 + section_5 + section_6
+#sections = section_1 + section_2 + section_3 + section_4 + section_5 + section_6

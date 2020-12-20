@@ -33,7 +33,7 @@ class ModelCardSerializer(ModelSerializer):
     class Meta:
         model = ModelCard
         fields = (
-            'model', 'model_version', 'project', 'model_card')
+            'model', 'model_version', 'project', 'model_details', 'intended_uses', 'factors', 'metrics', 'ethical_considerations', 'caveats_and_recommendations')
 
 
 class DeploymentDefinitionSerializer(ModelSerializer):

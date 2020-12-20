@@ -407,20 +407,63 @@
             </div>
             {% else %}
             <div class="container-fluid" style="margin-top: 35px">
-                <div class="row">
-                    <div class="col" style="margin-top:10px; margin: 10px; padding: 10px; border: 1px solid #c8e1ff;">
+
+                <div class="row" style="margin-top:10px;">
+                    <div class="col" style="margin: 10px; padding: 10px; border: 1px solid #c8e1ff;">
+                        <h5>Model Details</h5>
                         <ul>
-                            {% for key, value in model_card.items %}
-                            <li>{{ key }}: {{ value }}</li>
+                            {% for key, value in model_details.items %}
+                            {% if value %}
+                            <li>{{ value }}</li>
+                            {% endif %}
                             {% endfor %}
                         </ul>
                     </div>
                     <div class="col" style="margin-top:10px; margin: 10px; padding: 10px; border: 1px solid #c8e1ff;">
+                        <h5>Intended Use Cases</h5>
                         <ul>
-                            {% for key, value in model_card.items %}
-                            <li>{{ key }}: {{ value }}</li>
+                            {% for key, value in intended_uses.items %}
+                            {% if value %}
+                            <li>{{ value }}</li>
+                            {% endif %}
                             {% endfor %}
                         </ul>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:30px;">
+                    <div class="col" style="margin-top:10px; margin: 10px; padding: 10px; border: 1px solid #c8e1ff;">
+                        <h5>Model Factors</h5>
+                        <ul>
+                            {% for key, value in model_factors.items %}
+                            {% if value %}
+                            <li>{{ value }}</li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="col" style="margin-top:10px; margin: 10px; padding: 10px; border: 1px solid #c8e1ff;">
+                        <h5>Model Metrics</h5>
+                        <ul>
+                            {% for key, value in model_metrics.items %}
+                            {% if value %}
+                            <li>{{ value }}</li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:30px;">
+                    <div class="col" style="margin-top:10px; margin: 10px; padding: 10px; border: 1px solid #c8e1ff;">
+                        <h5>Ethical Considerations</h5>
+                        <p>
+                            {{ ethical_considerations }}
+                        </p>
+                    </div>
+                    <div class="col" style="margin-top:10px; margin: 10px; padding: 10px; border: 1px solid #c8e1ff;">
+                        <h5>Caveats and Recommendations</h5>
+                        <p>
+                            {{ model_caveats }}
+                        </p>
                     </div>
                 </div>
 
