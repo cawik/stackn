@@ -397,17 +397,56 @@
             </script>
         </div>
         <div class="tab-pane fade" id="card" role="tabpanel" aria-labelledby="card-tab">
-            <div class="get-started-header">
-                <p>A Model Card is a ...</p>
-            </div>
             {% if not model_card %}
+            <div class="get-started-header">
+                <p>The concept of Model Cards was developed by researchers at Google as a way to increase the
+                    transparency and amount of critical information that accompanies trained machine learning models.
+                    The documentation should include details on various parameters such as model performance
+                    characteristics, intended use cases, potential pitfalls, or other information to help users evaluate
+                    the suitability of these systems to their context. The main purpose of Model Cards is to standardize
+                    ethical practices and reporting, and provide an understanding of the systematic impacts of a model
+                    before deploying it.
+                </p>
+                <p>
+                    Further information about the model cards concept can be found in the research paper "Model Cards for Model Reporting" 
+                    by Mitchell et al. (2019) from <i>Proceedings of the Conference on Fairness, Accountability and Transparency</i>.
+                </p>
+            </div>
             <div class="container-fluid" style="margin-top: 35px">
                 <a href="{% url 'models:card' request.user project.slug model.id 'create' %}"
                     class="btn mt-auto btn-info" style="width: fit-content;">Create model card</a>
             </div>
             {% else %}
-            <div class="container-fluid" style="margin-top: 35px">
-
+            <div class="container-fluid">
+                <div class="row">
+                    <div>
+                        <p style="margin:0"><b>Model card created at:</b> {{ model_card.uploaded }}</p>
+                        <p style="margin:0"><b>Model card version:</b> {{ model_card.version }}</p>
+                        {% if has_been_updated %} 
+                        <p><i>(Latest update: {{ model_card.updated }})</i></p>
+                        {% endif %}
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn mt-auto btn-info " data-toggle="collapse"
+                            data-target="#modelCardDescription" style="width: 30%; float: right;">What is a model card?</button>
+                    </div>
+                    <div id="modelCardDescription" class="collapse" style="margin-top: 10px">
+                        <div class="get-started-header">
+                            <p>The concept of Model Cards was developed by researchers at Google as a way to
+                                increase the transparency and amount of critical information that accompanies trained machine
+                                learning models. The documentation should include details on various parameters such as model
+                                performance characteristics, intended use cases, potential pitfalls, or other information to
+                                help users evaluate the suitability of these systems to their context. The main purpose of Model Cards
+                                is to standardize ethical practices and reporting, and provide an understanding of the systematic
+                                impacts of a model before deploying it.
+                            </p>
+                            <p>
+                                Further information about the model cards concept can be found in the research paper "Model Cards for Model Reporting" 
+                                by Mitchell et al. (2019) from <i>Proceedings of the Conference on Fairness, Accountability and Transparency</i>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
                 <div class="row" style="margin-top:10px;">
                     <div class="col" style="margin: 10px; padding: 10px; border: 1px solid #c8e1ff;">
                         <h5>Model Details</h5>
@@ -466,10 +505,9 @@
                         </p>
                     </div>
                 </div>
-
                 <div style="margin-top: 35px">
                     <a href="{% url 'models:card' request.user project.slug model.id 'update' %}"
-                        class="btn mt-auto btn-info" style="width: fit-content;">Update model card</a>
+                    class="btn btn-primary" style="width: fit-content;">Update model card</a>
                 </div>
             </div>
             {% endif %}
@@ -491,5 +529,7 @@
             </div>
         </div>
     </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </div>
 {% endblock %}

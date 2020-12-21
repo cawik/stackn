@@ -169,12 +169,14 @@ def details(request, user, project, id):
 
     try:
         model_card = ModelCard.objects.get(project=project.name, model=model, model_version=model.version)
+        if model_card.uploaded != model_card.updated:
+            has_been_updated = True
         model_details = ast.literal_eval(model_card.model_details)
         intended_uses = ast.literal_eval(model_card.intended_uses)
         model_factors = ast.literal_eval(model_card.factors)
         model_metrics = ast.literal_eval(model_card.metrics)
         ethical_considerations = model_card.ethical_consideration
-        model_caveats = model_card.caveats_and_recommendations
+        model_caveats = model_card.caveats_and_recommendations       
     except Exception as e:
         print("No model card has been created for this model.")
 
@@ -336,7 +338,7 @@ def card(request, user, project, id, action):
 
 
 @login_required
-def submit(request, user, project, id):
+def submit(request, user, project, id, action):
     project = Project.objects.filter(slug=project).first()
     model = Model.objects.filter(id=id).first()
     card_entry_1 = {}
@@ -353,26 +355,24 @@ def submit(request, user, project, id):
                 question = model_details[i]
                 provided_answer = form.cleaned_data.get("md_{}".format(i+1))
                 card_entry_1[question] = provided_answer
-
             for i in range(0, len(intended_use)):
                 question = intended_use[i]
                 provided_answer = form.cleaned_data.get("iu_{}".format(i+1))
                 card_entry_2[question] = provided_answer
-
             for i in range(0, len(model_factors)):
                 question = model_factors[i]
                 provided_answer = form.cleaned_data.get("f_{}".format(i+1))
                 card_entry_3[question] = provided_answer
-
             for i in range(0, len(model_metrics)):
                 question = model_metrics[i]
                 provided_answer = form.cleaned_data.get("m_{}".format(i+1))
                 card_entry_4[question] = provided_answer
-            try: 
-                card_object = ModelCard.objects.get(project=project.name, model=model.name, model_version=model.version)
+            if action == 'update':
                 print("A model card exists for current model. Updating existing model card...")
-            except Exception as e:
-                print("Error '{}' raised since no model card exists for current model. Populating a new model card...".format(e))
+                card_object = ModelCard.objects.get(project=project.name, model=model.name, model_version=model.version)
+                card_object.version = card_object.version + 1
+            else:
+                print("No model card exists for current model. Populating new model card...")
                 card_object = ModelCard()
                 card_object.model = model.name
                 card_object.model_version = model.version
@@ -384,7 +384,6 @@ def submit(request, user, project, id):
             card_object.ethical_consideration = form.cleaned_data.get("ec")
             card_object.caveats_and_recommendations = form.cleaned_data.get("cr")
             card_object.save()
-            print(form)
             print("Model card saved for {} {}".format(model.name, model.version))
         else:
             print("Invalid form. Redirecting back to models...")

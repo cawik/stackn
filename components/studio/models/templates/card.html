@@ -25,17 +25,20 @@
         {% endif %}
     </div>
     <div class="get-started-header">
-        <p>Prepare a model card <b>{{ model.name }}
-                {{ model.version }}</b> by providing answers to a number of answers to the questions
-            specified under the sections below. Press the button in the "Assign" column to see the fields that you can
-            fill in for each section.</p>
+        <p>{% if not has_card %} Prepare a {% else %} Update the {% endif %} model card for <b>{{ model.name }} {{model.version }}</b> 
+            by providing answers to a number of answers to the questions specified under the sections below. Press the button in the 
+            "Assign" column to see the fields that you can fill in for each section.</p>
         <p>When you are satisfied with your model card, press the blue button at the bottom of the page. The information
             that you have provided will be visible under the "Model Cards" tab on the details page for {{ model.name }}
             {{ model.version }}. Remember that you can revisit this page at a later stage to update your model
-            card with new information.</p>
+            card with additional information.</p>
     </div>
     <div class="container-fluid" style="margin-top: 35px">
-        <form action="{% url 'models:submit' request.user project.slug model.id %}" method="post">
+        {% if not has_card %}
+        <form action="{% url 'models:submit' request.user project.slug model.id 'create' %}" method="post">
+        {% else %}
+        <form action="{% url 'models:submit' request.user project.slug model.id 'update' %}" method="post">
+        {% endif %}
             {% csrf_token %}
             <table class="table">
                 <thead>
@@ -51,21 +54,24 @@
                             <div id="section1" class="collapse">
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="md_1" id="md_1" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%">{{form.md_1.value|default_if_none:""}}</textarea>
+                                        aria-describedby="question"
+                                        style="width:90%">{{form.md_1.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Person or organization developing model
                                     </small>
                                 </div>
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="md_2" id="md_2" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%">{{form.md_2.value|default_if_none:""}}</textarea>
+                                        aria-describedby="question"
+                                        style="width:90%">{{form.md_2.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Model type
                                     </small>
                                 </div>
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="md_3" id="md_3" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%">{{form.md_3.value|default_if_none:""}}</textarea>
+                                        aria-describedby="question"
+                                        style="width:90%">{{form.md_3.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Information about training algorithms, parameters, fairness constraints
                                         or
@@ -75,28 +81,32 @@
                                 </div>
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="md_4" id="md_4" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%">{{form.md_4.value|default_if_none:""}}</textarea>
+                                        aria-describedby="question"
+                                        style="width:90%">{{form.md_4.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Paper or other resource for more information
                                     </small>
                                 </div>
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="md_5" id="md_5" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%">{{form.md_5.value|default_if_none:""}}</textarea>
+                                        aria-describedby="question"
+                                        style="width:90%">{{form.md_5.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Citation details
                                     </small>
                                 </div>
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="md_6" id="md_6" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%">{{form.md_6.value|default_if_none:""}}</textarea>
+                                        aria-describedby="question"
+                                        style="width:90%">{{form.md_6.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         License
                                     </small>
                                 </div>
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="md_7" id="md_7" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%">{{form.md_7.value|default_if_none:""}}</textarea>
+                                        aria-describedby="question"
+                                        style="width:90%">{{form.md_7.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Where to send questions or comments about the model
                                     </small>
@@ -135,21 +145,24 @@
                             <div id="section2" class="collapse">
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="iu_1" id="iu_1" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%">{{form.iu_1.value|default_if_none:""}}</textarea>
+                                        aria-describedby="question"
+                                        style="width:90%">{{form.iu_1.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Primary intended uses
                                     </small>
                                 </div>
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="iu_2" id="iu_2" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%">{{form.iu_2.value|default_if_none:""}}</textarea>
+                                        aria-describedby="question"
+                                        style="width:90%">{{form.iu_2.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Primary intended users
                                     </small>
                                 </div>
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="iu_3" id="iu_3" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%">{{form.iu_3.value|default_if_none:""}}</textarea>
+                                        aria-describedby="question"
+                                        style="width:90%">{{form.iu_3.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Out-of-scope use cases
                                     </small>
@@ -190,14 +203,16 @@
                             <div id="section3" class="collapse">
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="f_1" id="f_1" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%">{{form.f_1.value|default_if_none:""}}</textarea>
+                                        aria-describedby="question"
+                                        style="width:90%">{{form.f_1.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Relevant factors
                                     </small>
                                 </div>
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="f_2" id="f_2" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%">{{form.f_2.value|default_if_none:""}}</textarea>
+                                        aria-describedby="question"
+                                        style="width:90%">{{form.f_2.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Evaluation factors
                                     </small>
@@ -230,21 +245,24 @@
                             <div id="section4" class="collapse">
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="m_1" id="m_1" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%">{{form.m_1.value|default_if_none:""}}</textarea>
+                                        aria-describedby="question"
+                                        style="width:90%">{{form.m_1.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Model performance measures
                                     </small>
                                 </div>
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="m_2" id="m_2" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%">{{form.m_2.value|default_if_none:""}}</textarea>
+                                        aria-describedby="question"
+                                        style="width:90%">{{form.m_2.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Decision thresholds
                                     </small>
                                 </div>
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="m_3" id="m_3" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%">{{form.m_3.value|default_if_none:""}}</textarea>
+                                        aria-describedby="question"
+                                        style="width:90%">{{form.m_3.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Variation approaches
                                     </small>
@@ -285,7 +303,8 @@
                             <div id="section5" class="collapse">
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="ec" id="ec" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%">{{form.ec.value|default_if_none:""}}</textarea>
+                                        aria-describedby="question"
+                                        style="width:90%">{{form.ec.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Ethical Considerations
                                     </small>
@@ -310,7 +329,8 @@
                             <div id="section6" class="collapse">
                                 <div class="form-group" style="margin-top:50px">
                                     <textarea type="text" name="cr" id="cr" rows="4" cols="80" class="form-control"
-                                        aria-describedby="question" style="width:90%">{{form.cr.value|default_if_none:""}}</textarea>
+                                        aria-describedby="question"
+                                        style="width:90%">{{form.cr.value|default_if_none:""}}</textarea>
                                     <small class="form-text text-muted">
                                         Cavetats and Recommendations
                                     </small>
@@ -338,34 +358,11 @@
             </button>
             {% else %}
             <button type="submit" class="btn btn-primary" style="margin-top:45px;">
-                Update model card
+                Confirm changes
             </button>
             {% endif %}
         </form>
     </div>
-    <!--
-<div class="container-fluid" style="overflow-y: scroll; height:100%;">
-    <form action="{% url 'models:submit' request.user project.slug model.id %}" method="post">
-        {% csrf_token %}
-        {% for key, value in card_categories.items %}
-        <div class="col-sm-15" style="margin-top:35px">
-            <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo{{ forloop.counter }}"
-                style="width: 100%; height: 7%; color: #000000; border-color: #c8e1ff; background-color: #c8e1ff">{{ forloop.counter }}.
-                {{ key }}</button>
-            <div id="demo{{ forloop.counter }}" class="collapse">
-                {% for q, question in value.items %}
-                <div class="form-group" style="margin-top:35px">
-                    <textarea type="text" name="{{ q }}" rows="2" cols="80" class="form-control"
-                        aria-describedby="question" placeholder="{{ question }}"></textarea>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endfor %}
-        <button type="submit" class="btn btn-primary" style="margin-top:35px">Create model card</button>
-    </form>
-</div>
--->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </div>

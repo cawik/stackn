@@ -133,15 +133,15 @@ class ModelCard(models.Model):
     model = models.CharField(max_length=32, default='')
     model_version = models.CharField(max_length=32, default='')
     project = models.CharField(max_length=32, default='')
-    #model_card = models.TextField(max_length=1000, default='')
-    
-    model_details = models.TextField(max_length=1000, default='')
-    intended_uses = models.TextField(max_length=1000, default='')
-    factors = models.TextField(max_length=1000, default='')
-    metrics = models.TextField(max_length=1000, default='')
-    ethical_consideration = models.TextField(max_length=1000, default='')
-    caveats_and_recommendations = models.TextField(max_length=1000, default='')
-    
+    uploaded = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    model_details = models.TextField(blank=True)
+    intended_uses = models.TextField(blank=True)
+    factors = models.TextField(blank=True)
+    metrics = models.TextField(blank=True)
+    ethical_consideration = models.TextField(blank=True)
+    caveats_and_recommendations = models.TextField(blank=True)
+    version = models.IntegerField(default=1)
 
     class Meta:
         unique_together = ('model', 'project')
