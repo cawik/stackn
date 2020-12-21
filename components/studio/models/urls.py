@@ -12,6 +12,6 @@ urlpatterns = [
     path('models/<int:id>', views.details_public, name='details_public'),
     path('<user>/<project>/models/<int:id>/delete', views.delete, name='delete'),
     path('<user>/<project>/models/<int:id>/access', views.change_access, name='change_access'),
-    path('<user>/<project>/models/<int:id>/card/<str:action>', views.card, name='card'),
+    path('<user>/<project>/models/<int:id>/model_card/<str:action>', views.model_card, name='model_card'),
     path('<user>/<project>/models/<int:id>/submit/<str:action>', views.submit, name='submit')
 ]

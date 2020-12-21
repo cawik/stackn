@@ -2,6 +2,7 @@
 
 model_details = [
     "Person or organization developing model",
+    "Model version",
     "Model type", 
     "Information about training algorithms, parameters, fairness constraints or other applied approaches, and features",
     "Paper or other resource for more information",

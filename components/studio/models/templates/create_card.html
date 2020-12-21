@@ -1,0 +1,409 @@
+{% extends 'baseproject.html' %}
+{% block content %}
+
+<div class="col-md-9">
+
+    <nav aria-label="breadcrumb" class="project-breadcrumb-nav">
+        <ol class="breadcrumb project-breadcrumb-ol">
+            <li class="breadcrumb-item active" aria-current="page">Models</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{{ model.name }}</li>
+            <li class="breadcrumb-item">
+                {% if not has_card %}
+                Create card
+                {% else %}
+                Update card
+                {% endif %}
+            </li>
+        </ol>
+    </nav>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+        {% if not has_card %}
+        <h2>Prepare card for {{ model.name }} {{ model.version }}</h2>
+        {% else %}
+        <h2>Update card for {{ model.name }} {{ model.version }}</h2>
+        {% endif %}
+    </div>
+    <div class="get-started-header">
+        <p>{% if not has_card %} Prepare a {% else %} Update the {% endif %} model card for <b>{{ model.name }}
+                {{model.version }}</b>
+            by providing answers to a number of answers to the questions specified under the sections below. Press the
+            button in the
+            "Assign" column to see the fields that you can fill in for each section.</p>
+        <p>When you are satisfied with your model card, press the blue button at the bottom of the page. The information
+            that you have provided will be visible under the "Model Cards" tab on the details page for {{ model.name }}
+            {{ model.version }}. Remember that you can revisit this page at a later stage to update your model
+            card with additional information.</p>
+    </div>
+    <div class="container-fluid" style="margin-top: 35px">
+        {% if not has_card %}
+        <form action="{% url 'models:submit' request.user project.slug model.id 'create' %}" method="post">
+            {% else %}
+            <form action="{% url 'models:submit' request.user project.slug model.id 'update' %}" method="post">
+                {% endif %}
+                {% csrf_token %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 55%;text-align: left">Section</th>
+                            <th scope="col" style="width: 45%;text-align: right">Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><b>1. Model Details</b>
+                                <div id="section1" class="collapse">
+                                    <div class="form-group" style="margin-top:50px">
+                                        <textarea type="text" name="model_detail_1" id="model_detail_1" rows="4"
+                                            cols="80" class="form-control" aria-describedby="question"
+                                            style="width:90%">{{form.model_detail_1.value|default_if_none:""}}</textarea>
+                                        <small class="form-text text-muted">
+                                            Person or organization developing model
+                                        </small>
+                                    </div>
+                                    <div class="form-group" style="margin-top:50px">
+                                        <textarea type="text" name="model_detail_2" id="model_detail_2" rows="4"
+                                            cols="80" class="form-control" aria-describedby="question"
+                                            style="width:90%">{{form.model_detail_2.value|default_if_none:""}}</textarea>
+                                        <small class="form-text text-muted">
+                                            Model version
+                                        </small>
+                                    </div>
+                                    <div class="form-group" style="margin-top:50px">
+                                        <textarea type="text" name="model_detail_3" id="model_detail_3" rows="4"
+                                            cols="80" class="form-control" aria-describedby="question"
+                                            style="width:90%">{{form.model_detail_3.value|default_if_none:""}}</textarea>
+                                        <small class="form-text text-muted">
+                                            Model type
+                                        </small>
+                                    </div>
+                                    <div class="form-group" style="margin-top:50px">
+                                        <textarea type="text" name="model_detail_4" id="model_detail_4" rows="4"
+                                            cols="80" class="form-control" aria-describedby="question"
+                                            style="width:90%">{{form.model_detail_4.value|default_if_none:""}}</textarea>
+                                        <small class="form-text text-muted">
+                                            Information about training algorithms, parameters, fairness constraints
+                                            or
+                                            other applied
+                                            approaches, and features
+                                        </small>
+                                    </div>
+                                    <div class="form-group" style="margin-top:50px">
+                                        <textarea type="text" name="model_detail_5" id="model_detail_5" rows="4"
+                                            cols="80" class="form-control" aria-describedby="question"
+                                            style="width:90%">{{form.model_detail_5.value|default_if_none:""}}</textarea>
+                                        <small class="form-text text-muted">
+                                            Paper or other resource for more information
+                                        </small>
+                                    </div>
+                                    <div class="form-group" style="margin-top:50px">
+                                        <textarea type="text" name="model_detail_6" id="model_detail_6" rows="4"
+                                            cols="80" class="form-control" aria-describedby="question"
+                                            style="width:90%">{{form.model_detail_6.value|default_if_none:""}}</textarea>
+                                        <small class="form-text text-muted">
+                                            Citation details
+                                        </small>
+                                    </div>
+                                    <div class="form-group" style="margin-top:50px">
+                                        <textarea type="text" name="model_detail_7" id="model_detail_7" rows="4"
+                                            cols="80" class="form-control" aria-describedby="question"
+                                            style="width:90%">{{form.model_detail_7.value|default_if_none:""}}</textarea>
+                                        <small class="form-text text-muted">
+                                            License
+                                        </small>
+                                    </div>
+                                    <div class="form-group" style="margin-top:50px">
+                                        <textarea type="text" name="model_detail_8" id="model_detail_8" rows="4"
+                                            cols="80" class="form-control" aria-describedby="question"
+                                            style="width:90%">{{form.model_detail_8.value|default_if_none:""}}</textarea>
+                                        <small class="form-text text-muted">
+                                            Where to send questions or comments about the model
+                                        </small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <button type="button" class="btn mt-auto btn-info " data-toggle="collapse"
+                                    data-target="#section1" style="width: 20%; float: right;">Assign</button>
+                                <div id="section1" class="collapse" style="margin-top:50px; border: 1px solid #c8e1ff; border-radius: 1px; padding: 24px; background-color: #f1f8ff;
+                                font-size: 12px!important;">
+                                    This section of the model card should serve to answer basic questions regarding the
+                                    model version, type and other details.
+                                    <ul>
+                                        <li><b>Person or organization developing model: </b>What person or organization
+                                            developed the model? This can be used by all stakeholders to infer details
+                                            pertaining to model development and potential conflicts of interest.</li>
+                                        <li>
+                                            <b>Model version: </b>How does version {{ model.version}} differ from previous
+                                                versions of "{{ model.name }}"? This is useful for all stakeholders to track whether the model
+                                                is the latest version, associate known bugs to the correct model
+                                                versions, and aid in model comparisons.
+                                        </li>
+                                        <li><b>Model type: </b>What type of model is it? This includes basic model
+                                            architecture details, such as whether it is a Naive Bayes classifier, a
+                                            Convolutional Neural Network, etc. This is likely to be particularly
+                                            relevant
+                                            for software and model developers, as well as individuals knowledgeable
+                                            about
+                                            machine learning, to highlight what kinds of assumptions are encoded in the
+                                            system.</li>
+                                        <li><b>Paper or other resource for more information: </b>Where can resources for
+                                            more information be found?</li>
+                                        <li><b>Citation details: </b>How should the model be cited?</li>
+                                        <li><b>License: </b>License information can be provided.</li>
+                                        <li><b>Feedback on the model: </b>E.g., what is an email address that people may
+                                            write to for further information?</li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>2. Intended Use</b>
+                                <div id="section2" class="collapse">
+                                    <div class="form-group" style="margin-top:50px">
+                                        <textarea type="text" name="intended_use_1" id="intended_use_1" rows="4"
+                                            cols="80" class="form-control" aria-describedby="question"
+                                            style="width:90%">{{form.intended_use_1.value|default_if_none:""}}</textarea>
+                                        <small class="form-text text-muted">
+                                            Primary intended uses
+                                        </small>
+                                    </div>
+                                    <div class="form-group" style="margin-top:50px">
+                                        <textarea type="text" name="intended_use_2" id="intended_use_2" rows="4"
+                                            cols="80" class="form-control" aria-describedby="question"
+                                            style="width:90%">{{form.intended_use_2.value|default_if_none:""}}</textarea>
+                                        <small class="form-text text-muted">
+                                            Primary intended users
+                                        </small>
+                                    </div>
+                                    <div class="form-group" style="margin-top:50px">
+                                        <textarea type="text" name="intended_use_3" id="intended_use_3" rows="4"
+                                            cols="80" class="form-control" aria-describedby="question"
+                                            style="width:90%">{{form.intended_use_3.value|default_if_none:""}}</textarea>
+                                        <small class="form-text text-muted">
+                                            Out-of-scope use cases
+                                        </small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <button type="button" class="btn mt-auto btn-info " data-toggle="collapse"
+                                    data-target="#section2" style="width: 20%; float: right;">Assign</button>
+                                <div id="section2" class="collapse" style="margin-top:50px; border: 1px solid #c8e1ff; border-radius: 1px; padding: 24px; background-color: #f1f8ff;
+                                font-size: 12px!important;">
+                                    This section should allow readers to quickly grasp what the model should and should
+                                    not
+                                    be used for, and why it was created. It can also help frame the statistical analysis
+                                    presented in the rest of the card, including a short description of the user(s),
+                                    use-case(s), and context(s) for which the model was originally developed. Possible
+                                    information includes:
+                                    <ul>
+                                        <li><b>Primary intended uses: </b>This section details whether the model was
+                                            developed with general or specific tasks in mind. The use cases may be as
+                                            broadly or narrowly defined as the developers intend. For example, if the
+                                            model
+                                            was built
+                                            simply to label images, then this task should be indicated as the primary
+                                            intended use case.</li>
+                                        <li><b>Primary intended users: </b>For example, was the model developed for
+                                            entertainment purposes, for hobbyists, or enterprise solutions? This helps
+                                            users
+                                            gain insight into how robust the model may be to different kinds of inputs.
+                                        </li>
+                                        <li><b>Out-of-scope uses: </b>Here, the model card should highlight technology
+                                            that the model might easily be confused with, or related contexts that users
+                                            could try to apply the model to. This section may provide an opportunity to
+                                            recommend a related or similar model that was designed to better meet that
+                                            particular need, where possible.</li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>3. Factors</b>
+                                <div id="section3" class="collapse">
+                                    <div class="form-group" style="margin-top:50px">
+                                        <textarea type="text" name="factor_1" id="factor_1" rows="4" cols="80"
+                                            class="form-control" aria-describedby="question"
+                                            style="width:90%">{{form.factor_1.value|default_if_none:""}}</textarea>
+                                        <small class="form-text text-muted">
+                                            Relevant factors
+                                        </small>
+                                    </div>
+                                    <div class="form-group" style="margin-top:50px">
+                                        <textarea type="text" name="factor_2" id="factor_2" rows="4" cols="80"
+                                            class="form-control" aria-describedby="question"
+                                            style="width:90%">{{form.factor_2.value|default_if_none:""}}</textarea>
+                                        <small class="form-text text-muted">
+                                            Evaluation factors
+                                        </small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <button type="button" class="btn mt-auto btn-info " data-toggle="collapse"
+                                    data-target="#section3" style="width: 20%; float: right;">Assign</button>
+                                <div id="section3" class="collapse" style="margin-top:50px; border: 1px solid #c8e1ff; border-radius: 1px; padding: 24px; background-color: #f1f8ff;
+                                font-size: 12px!important;">
+                                    Model cards ideally provide a summary of model performance across a variety of
+                                    relevant
+                                    factors including groups, instrumentation, and environments. We briefly describe
+                                    each of
+                                    these factors and their relevance followed by the corresponding prompts in the model
+                                    card.
+                                    <ul>
+                                        <li><b>Relevant factors: </b>What are foreseeable salient factors for which
+                                            model
+                                            performance may vary, and how were these determined?</li>
+                                        <li><b>Evaluation factors: </b>Which factors are being reported, and why were
+                                            these
+                                            chosen? If the relevant factors and evaluation factors are different, why?
+                                            For
+                                            example, while Fitzpatrick skin type is a relevant factor for face
+                                            detection, an
+                                            evaluation dataset annotated by skin type might not be available until
+                                            reporting
+                                            model performance across groups becomes standard practice.</li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>4. Metrics</b>
+                                <div id="section4" class="collapse">
+                                    <div class="form-group" style="margin-top:50px">
+                                        <textarea type="text" name="metric_1" id="metric_1" rows="4" cols="80"
+                                            class="form-control" aria-describedby="question"
+                                            style="width:90%">{{form.metric_1.value|default_if_none:""}}</textarea>
+                                        <small class="form-text text-muted">
+                                            Model performance measures
+                                        </small>
+                                    </div>
+                                    <div class="form-group" style="margin-top:50px">
+                                        <textarea type="text" name="metric_2" id="metric_2" rows="4" cols="80"
+                                            class="form-control" aria-describedby="question"
+                                            style="width:90%">{{form.metric_2.value|default_if_none:""}}</textarea>
+                                        <small class="form-text text-muted">
+                                            Decision thresholds
+                                        </small>
+                                    </div>
+                                    <div class="form-group" style="margin-top:50px">
+                                        <textarea type="text" name="metric_3" id="metric_3" rows="4" cols="80"
+                                            class="form-control" aria-describedby="question"
+                                            style="width:90%">{{form.metric_3.value|default_if_none:""}}</textarea>
+                                        <small class="form-text text-muted">
+                                            Variation approaches
+                                        </small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <button type="button" class="btn mt-auto btn-info " data-toggle="collapse"
+                                    data-target="#section4" style="width: 20%; float: right;">Assign</button>
+                                <div id="section4" class="collapse" style="margin-top:50px; border: 1px solid #c8e1ff; border-radius: 1px; padding: 24px; background-color: #f1f8ff;
+                                font-size: 12px!important;">
+                                    The appropriate metrics to feature in a model card depend on the type of model that
+                                    is
+                                    being tested. For example, classification systems in which the primary output is a
+                                    class label differ significantly from systems whose primary output is a score. In
+                                    all
+                                    cases, the reported metrics should be determined based on the model’s structure
+                                    and
+                                    intended use. Details for this section include:
+                                    <ul>
+                                        <li><b>Model performance measures: </b>What measures of model performance are
+                                            being
+                                            reported, and why were they selected over other measures of model
+                                            performance?
+                                        </li>
+                                        <li><b>Decision thresholds: </b>If decision thresholds are used, what are they,
+                                            and
+                                            why were those decision thresholds chosen? When the model card is presented
+                                            in a
+                                            digital format, a threshold slider should ideally be available to view
+                                            performance parameters across various decision thresholds.</li>
+                                        <li><b>Approaches to uncertainty and variability: </b>How are the measurements
+                                            and
+                                            estimations of these metrics calculated? For example, this may include
+                                            standard deviation, variance, confidence intervals, or KL divergence.
+                                            Details of
+                                            how these values are approximated should also be included (e.g., average of
+                                            5
+                                            runs, 10-fold cross-validation).</li>
+                                    </ul>
+                                    Remember, you can also see visuals for performance factors that you have logged
+                                    under
+                                    the performance tab for {{ model.name }}.
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>5. Ethical Considerations</b>
+                                <div id="section5" class="collapse">
+                                    <div class="form-group" style="margin-top:50px">
+                                        <textarea type="text" name="ethical_consideration" id="ethical_consideration"
+                                            rows="4" cols="80" class="form-control" aria-describedby="question"
+                                            style="width:90%">{{form.ethical_consideration.value|default_if_none:""}}</textarea>
+                                        <small class="form-text text-muted">
+                                            Ethical Considerations
+                                        </small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <button type="button" class="btn mt-auto btn-info " data-toggle="collapse"
+                                    data-target="#section5" style="width: 20%; float: right;">Assign</button>
+                                <div id="section5" class="collapse" style="margin-top:50px; border: 1px solid #c8e1ff; border-radius: 1px; padding: 24px; background-color: #f1f8ff;
+                                font-size: 12px!important;">
+                                    This section is intended to demonstrate the ethical considerations that went
+                                    into model development, surfacing ethical challenges and solutions to stakeholders.
+                                    Ethical analysis does not always lead to precise solutions, but the process of
+                                    ethical contemplation is worthwhile to inform on responsible practices and next
+                                    steps in future work.
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>6. Caveats and Recommendations</b>
+                                <div id="section6" class="collapse">
+                                    <div class="form-group" style="margin-top:50px">
+                                        <textarea type="text" name="caveats_and_recommendations"
+                                            id="caveats_and_recommendations" rows="4" cols="80" class="form-control"
+                                            aria-describedby="question"
+                                            style="width:90%">{{form.caveats_and_recommendations.value|default_if_none:""}}</textarea>
+                                        <small class="form-text text-muted">
+                                            Cavetats and Recommendations
+                                        </small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <button type="button" class="btn mt-auto btn-info " data-toggle="collapse"
+                                    data-target="#section6" style="width: 20%; float: right;">Assign</button>
+                                <div id="section6" class="collapse" style="margin-top:50px; border: 1px solid #c8e1ff; border-radius: 1px; padding: 24px; background-color: #f1f8ff;
+                                font-size: 12px!important;">
+                                    This section should list additional concerns that were not covered in the previous
+                                    sections. For example, did the results suggest any further testing? Were there any
+                                    relevant groups that were not represented in the evaluation dataset? Are there
+                                    additional recommendations for model use? What are the ideal characteristics of an
+                                    evaluation dataset for this model?
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                {% if not has_card %}
+                <button type="submit" class="btn btn-primary" style="margin-top:45px;">
+                    Create model card
+                </button>
+                {% else %}
+                <button type="submit" class="btn btn-primary" style="margin-top:45px;">
+                    Confirm changes
+                </button>
+                {% endif %}
+            </form>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</div>
+{% endblock %}

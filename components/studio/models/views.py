@@ -169,8 +169,6 @@ def details(request, user, project, id):
 
     try:
         model_card = ModelCard.objects.get(project=project.name, model=model, model_version=model.version)
-        if model_card.uploaded != model_card.updated:
-            has_been_updated = True
         model_details = ast.literal_eval(model_card.model_details)
         intended_uses = ast.literal_eval(model_card.intended_uses)
         model_factors = ast.literal_eval(model_card.factors)
@@ -288,50 +286,41 @@ def delete(request, user, project, id):
     return render(request, template, locals())
 
 
+def get_initial_data(form_entry, form_str, initial):
+    counter = 1
+    for key, value in form_entry.items():
+        initial[form_str + '{}'.format(counter)] = value
+        counter += 1
+    return initial
+
+
+def get_form_data(form, form_entry, form_str):
+    card_entry = {}
+    for i in range(0, len(form_entry)):
+        question = form_entry[i]
+        provided_answer = form.cleaned_data.get(form_str + '{}'.format(i+1))
+        card_entry[question] = provided_answer
+    return card_entry
+
+
 @login_required
-def card(request, user, project, id, action):
-    template = 'card.html'
+def model_card(request, user, project, id, action):
+    template = 'create_card.html'
     project = Project.objects.get(slug=project)
     model = Model.objects.get(id=id)
     if action == 'create':
         has_card = False
-        initial = {}
         form = ModelCardForm()
-    
-    elif action == 'update':
+    else:
         has_card = True
+        model_card = ModelCard.objects.get(project=project.name, model=model.name, model_version=model.version)
         initial = {}
-        db_entry = ModelCard.objects.get(project=project.name, model=model.name, model_version=model.version)
-        model_details = ast.literal_eval(db_entry.model_details)
-        intended_use = ast.literal_eval(db_entry.intended_uses)
-        model_factors = ast.literal_eval(db_entry.factors)
-        model_metrics = ast.literal_eval(db_entry.metrics)
-        ethical_consideration = db_entry.ethical_consideration
-        model_caveats = db_entry.caveats_and_recommendations
-
-        counter = 1
-        for key, value in model_details.items():
-            initial['md_{}'.format(counter)] = value
-            counter += 1
-        
-        counter = 1
-        for key, value in intended_use.items():
-            initial['iu_{}'.format(counter)] = value
-            counter += 1
-        
-        counter = 1
-        for key, value in model_factors.items():
-            initial['f_{}'.format(counter)] = value
-            counter += 1
-        
-        counter = 1
-        for key, value in model_metrics.items():
-            initial['m_{}'.format(counter)] = value
-            counter += 1
-        
-        initial['ec'] = ethical_consideration
-        initial['cr'] = model_caveats
-
+        initial = get_initial_data(ast.literal_eval(model_card.model_details), 'model_detail_', initial)
+        initial = get_initial_data(ast.literal_eval(model_card.intended_uses), 'intended_use_', initial)
+        initial = get_initial_data(ast.literal_eval(model_card.factors), 'factor_', initial)
+        initial = get_initial_data(ast.literal_eval(model_card.metrics), 'metric_', initial)
+        initial['ethical_consideration'] = model_card.ethical_consideration
+        initial['caveats_and_recommendations'] = model_card.caveats_and_recommendations
         form = ModelCardForm(initial=initial)
 
     return render(request, template, locals())
@@ -341,52 +330,30 @@ def card(request, user, project, id, action):
 def submit(request, user, project, id, action):
     project = Project.objects.filter(slug=project).first()
     model = Model.objects.filter(id=id).first()
-    card_entry_1 = {}
-    card_entry_2 = {}
-    card_entry_3 = {}
-    card_entry_4 = {}
-    card_entry_5 = {}
-    card_entry_6 = {}
     if request.method == "POST":
         form = ModelCardForm(request.POST)
         if form.is_valid():
             print("Valid form! Saving")
-            for i in range(0, len(model_details)):
-                question = model_details[i]
-                provided_answer = form.cleaned_data.get("md_{}".format(i+1))
-                card_entry_1[question] = provided_answer
-            for i in range(0, len(intended_use)):
-                question = intended_use[i]
-                provided_answer = form.cleaned_data.get("iu_{}".format(i+1))
-                card_entry_2[question] = provided_answer
-            for i in range(0, len(model_factors)):
-                question = model_factors[i]
-                provided_answer = form.cleaned_data.get("f_{}".format(i+1))
-                card_entry_3[question] = provided_answer
-            for i in range(0, len(model_metrics)):
-                question = model_metrics[i]
-                provided_answer = form.cleaned_data.get("m_{}".format(i+1))
-                card_entry_4[question] = provided_answer
             if action == 'update':
                 print("A model card exists for current model. Updating existing model card...")
-                card_object = ModelCard.objects.get(project=project.name, model=model.name, model_version=model.version)
-                card_object.version = card_object.version + 1
+                model_card = ModelCard.objects.get(project=project.name, model=model.name, model_version=model.version)
+                model_card.version = model_card.version + 1
             else:
                 print("No model card exists for current model. Populating new model card...")
-                card_object = ModelCard()
-                card_object.model = model.name
-                card_object.model_version = model.version
-                card_object.project = project.name
-            card_object.model_details = card_entry_1
-            card_object.intended_uses = card_entry_2
-            card_object.factors = card_entry_3
-            card_object.metrics = card_entry_4
-            card_object.ethical_consideration = form.cleaned_data.get("ec")
-            card_object.caveats_and_recommendations = form.cleaned_data.get("cr")
-            card_object.save()
-            print("Model card saved for {} {}".format(model.name, model.version))
+                model_card = ModelCard()
+                model_card.model = model.name
+                model_card.model_version = model.version
+                model_card.project = project.name
+            model_card.model_details = get_form_data(form, model_details, 'model_detail_')
+            model_card.intended_uses = get_form_data(form, intended_use, 'intended_use_')
+            model_card.factors = get_form_data(form, model_factors, 'factor_')
+            model_card.metrics = get_form_data(form, model_metrics, 'metric_')
+            model_card.ethical_consideration = form.cleaned_data.get('ethical_consideration')
+            model_card.caveats_and_recommendations = form.cleaned_data.get('caveats_and_recommendations')
+            model_card.save()
+            print("Model card saved! Redirecting back to details page for {} {}".format(model.name, model.version))
         else:
-            print("Invalid form. Redirecting back to models...")
+            print("Invalid form. Redirecting back to details page for {} {}".format(model.name, model.version))
         return HttpResponseRedirect(
             reverse('models:details', kwargs={'user': user, 'project': project.slug, 'id': id}))
-    return render(request, 'card.html', locals())
+    return render(request, 'create_card.html', locals())

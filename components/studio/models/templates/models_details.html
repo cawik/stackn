@@ -413,7 +413,7 @@
                 </p>
             </div>
             <div class="container-fluid" style="margin-top: 35px">
-                <a href="{% url 'models:card' request.user project.slug model.id 'create' %}"
+                <a href="{% url 'models:model_card' request.user project.slug model.id 'create' %}"
                     class="btn mt-auto btn-info" style="width: fit-content;">Create model card</a>
             </div>
             {% else %}
@@ -422,8 +422,8 @@
                     <div>
                         <p style="margin:0"><b>Model card created at:</b> {{ model_card.uploaded }}</p>
                         <p style="margin:0"><b>Model card version:</b> {{ model_card.version }}</p>
-                        {% if has_been_updated %} 
-                        <p><i>(Latest update: {{ model_card.updated }})</i></p>
+                        {% if model_card.version != 1%} 
+                        <p><i>Latest update: {{ model_card.updated }}</i></p>
                         {% endif %}
                     </div>
                     <div class="col">
@@ -506,7 +506,7 @@
                     </div>
                 </div>
                 <div style="margin-top: 35px">
-                    <a href="{% url 'models:card' request.user project.slug model.id 'update' %}"
+                    <a href="{% url 'models:model_card' request.user project.slug model.id 'update' %}"
                     class="btn btn-primary" style="width: fit-content;">Update model card</a>
                 </div>
             </div>
