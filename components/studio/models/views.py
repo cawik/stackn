@@ -359,7 +359,7 @@ def view_pdf(request, user, project, id):
     font_config = FontConfiguration()
     css = CSS('./static/css/datasheet.css', font_config=font_config)
 
-    html_string=render_to_string('datasheet_pdf_template.html', {'model_card_info': model_card_info, 'name': name})
+    html_string=render_to_string('modelcard_pdf_template.html', {'model_card_info': model_card_info, 'name': name})
     html = HTML(string=html_string)
     result = html.write_pdf(stylesheets=[css], font_config=font_config)
 
