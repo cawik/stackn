@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from django.http import HttpResponseRedirect, FileResponse, Http404
+from django.http import HttpResponseRedirect, FileResponse, Http404, HttpResponse
 from django.core.files import File
 from projects.models import Project
 from studio.minio import MinioRepository, ResponseError
@@ -11,8 +11,20 @@ from .helpers import create_pdf
 from .models import Dataset
 from .datasheet_questions import datasheet_questions
 from django.urls import reverse
+#from io import BytesIO
+#from xhtml2pdf import pisa
+from django.template import Context, Template
+from django.template.loader import render_to_string
+from weasyprint import HTML, CSS
+from weasyprint.fonts import FontConfiguration
+import tempfile
 import ast
-from fpdf import FPDF
+
+import os
+#from xhtml2pdf import pisa
+from django.contrib.staticfiles import finders
+#from fpdf import FPDF
+#from .utils import render_to_pdf
 
 @login_required
 def page(request, user, project, page_index):
@@ -109,11 +121,13 @@ def datasheet(request, user, project, page_index, name, action):
     project = Project.objects.filter(slug=project).first()
     questions = datasheet_questions
     if action == 'details':
+        print('details')
         has_datasheet = True
         db_entry = Dataset.objects.get(project=project.slug, name=name)
         datasheet = ast.literal_eval(db_entry.datasheet)
     elif action == 'create':
         has_datasheet = False
+
     else:
         initial = {}
         db_entry = Dataset.objects.get(project=project.slug, name=name)
@@ -126,59 +140,6 @@ def datasheet(request, user, project, page_index, name, action):
         print(form)
     return render(request, template, locals())
 
-
-    """
-
-    submitbutton = request.POST.get("submit")
-
-    datasheet_info = {}
-    print("Project:" , project.slug)
-    form = DatasheetForm(request.POST or None)
-    if request.method == "POST":
-        if form.is_valid():
-            datasheet_file_upload = form.cleaned_data.get("upload")
-            print(form.name)
-            print("form is valid")
-            if not datasheet_file_upload:
-                print("no upload")
-                #for i in range(0, len(questions) + 1):
-                #    datasheet_info[questions[i]] = form.cleaned_data.get("q{}".format(str(i)))
-                datasheet_info[questions[0]] = form.cleaned_data.get("q0")
-                datasheet_info[questions[1]] = form.cleaned_data.get("q1")
-                datasheet_info[questions[2]] = form.cleaned_data.get("q2")
-                datasheet_info[questions[3]] = form.cleaned_data.get("q3")
-                datasheet_info[questions[4]] = form.cleaned_data.get("q4")
-                datasheet_info[questions[5]] = form.cleaned_data.get("q5")
-                datasheet_info[questions[6]] = form.cleaned_data.get("q6")
-                datasheet_info[questions[7]] = form.cleaned_data.get("q7")
-                datasheet_info[questions[8]] = form.cleaned_data.get("q8")
-                datasheet_info[questions[9]] = form.cleaned_data.get("q9")
-                print(datasheet_info)
-                #pdf = create_pdf(datasheet_info)
-                #pdf.output("datasets/datasheets/datasheet_example.pdf")
-                #datasheet_file = open("datasets/datasheets/datasheet_example.pdf", "rb")
-                #pdf.output("datasheets/datasheet_{}.pdf".format(dataset_model.name))
-                #datasheet_file = open("datasheets/datasheet_{}".format(dataset_model.name), "rb")
-                #datasheet_file = open("datasets/test.txt", 'r')
-                #dataset_model.datasheet = File(datasheet_file)
-                #dataset_model.datasheet = File(datasheet_file)
-                #dataset_model.save()
-                #datasheet_file.close()
-            else:
-                print("upload")
-                dataset.datasheet_upload = File(datasheet_file_upload)
-                dataset.save()
-            if Dataset.objects.filter(project=project.name, name=name):
-                dataset = Dataset.objects.get(name=name)
-            else:
-                dataset = Dataset()
-                dataset.name = name
-                dataset.project = project.name
-            dataset.datasheet = datasheet_info
-            dataset.save()
-        else:
-            print("form not valid")
-    """
     
 
 @login_required
@@ -200,19 +161,45 @@ def submit(request, user, project, page_index, name):
                 dataset.project = project
             dataset.datasheet = datasheet_info
             dataset.save()
-            if 'pdf' in request.POST:
-                print("Generating pdf...")
-                pdf = create_pdf(datasheet_info, name)
-                pdf.output('{}.pdf'.format(name))
-                return pdf_view(request, '{}.pdf'.format(name))            
+            print(request.POST)  
         else:
             print("Invalid form. Redirecting back to datasets...")
+        #if 'pdf' in request.POST:
+            #print("Generating pdf...")
+            #dataset_context = {"project": project, 'name': name, 'datasheet': datasheet_info }
+            #pdf = render_to_pdf('datasheet_pdf_template.html', dataset_context)
+            #print(pdf)
+            #dataset.fpdf = pdf
+            #dataset.save()
+            #pdf = render_pdf_view(request, 'datasheet_pdf_template.html', dataset_context)
+            #return render(request, pdf)
+            #print(pdf)   
         return HttpResponseRedirect(
             reverse('datasets:page', kwargs={'user': request.user, 'project': project, 'page_index': 1}))
     return render(request, 'dataset_datasheet.html', locals())
 
-def pdf_view(request, file):
-    try:
-        return FileResponse(open(file, 'rb'), content_type='application/pdf')
-    except FileNotFoundError:
-        raise Http404()
+@login_required
+def view_pdf(request, user, project, page_index, name):
+    print('Generating pdf...')
+    db_entry = Dataset.objects.get(project=project, name=name)
+    datasheet = ast.literal_eval(db_entry.datasheet)
+    
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(db_entry.name)
+    response['Content-Transfer-Encoding'] = 'binary'
+
+    font_config = FontConfiguration()
+    css = CSS('./static/css/datasheet.css', font_config=font_config)
+
+    html_string=render_to_string('datasheet_pdf_template.html', {'datasheet': datasheet, 'name': name})
+    html = HTML(string=html_string)
+    result = html.write_pdf(stylesheets=[css], font_config=font_config)
+
+    with tempfile.NamedTemporaryFile(delete=True) as output:
+        output.write(result)
+        output.flush()
+        output = open(output.name, 'rb')
+        response.write(output.read())
+    return response
+
+    

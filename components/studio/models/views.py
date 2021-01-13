@@ -332,3 +332,34 @@ def submit(request, user, project, id):
         return HttpResponseRedirect(
             reverse('models:details', kwargs={'user': user, 'project': project.slug, 'id': id}))
     return render(request, 'card.html', locals())
+
+@login_required
+def view_pdf(request, user, project, id):
+    print('Generating pdf...')
+    project = Project.objects.filter(slug=project).first()
+    model = Model.objects.filter(id=id).first()
+    model_card_info = {}
+
+    for i in range(0, len(sections)):
+        question = sections[i]
+        provided_answer = form.cleaned_data.get("q{}".format(i+1))
+        model_card_info[question] = provided_answer
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(model.name)
+    response['Content-Transfer-Encoding'] = 'binary'
+
+    font_config = FontConfiguration()
+    css = CSS('./static/css/datasheet.css', font_config=font_config)
+
+    html_string=render_to_string('datasheet_pdf_template.html', {'model_card_info': model_card_info, 'name': name})
+    html = HTML(string=html_string)
+    result = html.write_pdf(stylesheets=[css], font_config=font_config)
+
+    with tempfile.NamedTemporaryFile(delete=True) as output:
+        output.write(result)
+        output.flush()
+        output = open(output.name, 'rb')
+        response.write(output.read())
+    return response
+

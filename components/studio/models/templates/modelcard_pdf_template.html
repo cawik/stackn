@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang0="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-whidth, initial-scale=1.0" />
+    <h1>Model card for {{ name }}</h1>
+</head>
+
+<body>
+    {% for key, value in model_card_info.items %}
+    {% if value %}
+    <b class="label">Question {{ forloop.counter }}</b>
+    <div class="border"></div>
+        <div class="question">
+            <label>{{ key }}</label>
+        </div>
+            <p class="answer">
+                <i>{{value}}</i>
+            </p>
+    </div>
+    {% endif %}
+    {% endfor %}
+</body>
+
+</html>

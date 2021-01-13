@@ -98,7 +98,7 @@ class DatasheetSerializer(ModelSerializer):
 class DatasetSerializer(ModelSerializer):
     class Meta:
         model = Dataset
-        fields = ['project', 'name', 'version_tag', 'datasheet']
+        fields = ['project', 'name', 'version_tag', 'datasheet', 'fpdf']
 
 class FileModelSerializer(ModelSerializer):
     class Meta:

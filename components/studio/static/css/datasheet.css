@@ -1,0 +1,31 @@
+@font-face {
+  font-family: IBMPlexSans-Light;
+  src: url('../fonts/IBMPlexSans-Light.ttf');
+}
+@font-face {
+  font-family: IBMPlexSans-Regular;
+  src: url('../fonts/IBMPlexSans-Regular.ttf');
+}
+h1 {
+  font-family: IBMPlexSans-Light;
+}
+.question {
+  font-family: IBMPlexSans-Regular;
+  margin-bottom: 10px;
+}
+.answer{
+  font-family: IBMPlexSans-Light;
+}
+.border {
+  border-top: 1px solid #c8e1ff;
+  border-left: 1px solid #c8e1ff;
+  padding: 2px;
+  margin-bottom:3px;
+  width: 100%;
+}
+.label {
+  color: #c8e1ff;
+  font-family: IBMPlexSans-Regular;
+  font-size: x-small;
+  margin-bottom: 1px;
+}

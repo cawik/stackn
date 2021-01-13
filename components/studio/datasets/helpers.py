@@ -1,4 +1,5 @@
 from fpdf import FPDF
+import xhtml2pdf
 import itertools
 from .forms import DatasheetForm
 
