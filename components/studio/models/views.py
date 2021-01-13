@@ -1,6 +1,6 @@
 import uuid
 from django.shortcuts import render
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.urls import reverse
 from projects.models import Project, ProjectLog
 from reports.models import Report, ReportGenerator
@@ -15,6 +15,15 @@ import markdown
 import ast
 from collections import defaultdict
 from .model_cards_questions import sections
+from django.template import Context, Template
+from django.template.loader import render_to_string
+from weasyprint import HTML, CSS
+from weasyprint.fonts import FontConfiguration
+import tempfile
+import ast
+import os
+from django.contrib.staticfiles import finders
+
 
 new_data = defaultdict(list)
 logger = logging.getLogger(__name__)
@@ -338,12 +347,10 @@ def view_pdf(request, user, project, id):
     print('Generating pdf...')
     project = Project.objects.filter(slug=project).first()
     model = Model.objects.filter(id=id).first()
-    model_card_info = {}
 
-    for i in range(0, len(sections)):
-        question = sections[i]
-        provided_answer = form.cleaned_data.get("q{}".format(i+1))
-        model_card_info[question] = provided_answer
+
+    card_object = ModelCard.objects.get(project=project.name, model=model.name, model_version=model.version)
+    model_card_info = ast.literal_eval(card_object.model_card)
 
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(model.name)
