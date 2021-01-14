@@ -8,5 +8,7 @@ urlpatterns = [
     path('<str:path_name>/<int:page_index>', views.path_page, name='path_page'),
     #path('<int:page_index>/<str:entry_name>/datasheet', views.datasheet, name='datasheet'),
     path('<int:page_index>/<str:name>/datasheet/<str:action>', views.datasheet, name='datasheet'),
-    path('<int:page_index>/<str:name>/submit', views.submit, name='submit')
+    path('<int:page_index>/<str:name>/submit', views.submit, name='submit'),
+    #path('<int:page_index>/<str:name>/pdf', views.view_pdf, name='pdf')
+    path('<int:page_index>/<str:name>/pdf', views.view_pdf, name='pdf')
 ]

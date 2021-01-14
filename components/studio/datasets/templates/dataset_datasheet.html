@@ -11,13 +11,13 @@
         </ol>
     </nav>
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
-        <h2>Datasheet for {{ name }}</h2>
+        <h2 class="cray">Datasheet for {{ name }}</h2>
     </div>
     <div class="get-started-header">
         <p>A datasheet is a standardized document used in order to provide information about the provenance, creation,
             and usage of a particular dataset. They serve to increase transparancy and to make it easier for new users
-            of the dataset to avoid unwanted biases. Below can fill in a simplified version of a datasheet, or upload a
-            complete version. You can read more about Datasheets for Datasets at: https://arxiv.org/abs/1803.09010</p>
+            of the dataset to avoid unwanted biases. Below, a simplified version of a datasheet can be filled in.
+            You can read more about Datasheets for Datasets at: https://arxiv.org/abs/1803.09010</p>
         {% if has_datasheet %}
         <p>Below you can see the answers provided on the datasheet for dataset {{ name }}. Press the button on the
             bottom of the page to update the datasheet.</p>
@@ -62,8 +62,7 @@
             </div>
             {% endfor %}
             {% endif %}
-            <button type="submit" class="btn btn-primary" style="margin-top:35px">Submit</button>
-            <button type="submit" class="btn btn-primary" style="margin-top:35px" name="pdf">Submit and generate pdf</button>
+            <button type="submit" class="btn btn-primary" style="margin-top:35px">Submit</button>    
         </form>
         {% else %}
         <form action="{%url 'datasets:datasheet' request.user project.slug 1 name 'update' %}" method="post">
@@ -80,6 +79,7 @@
             {% endfor %}
             <button type="submit" class="btn btn-primary" style="margin-top:35px">Update datasheet</button>
         </form>
+        <a class="btn btn-primary" style="margin-top:35px" name="pdf", href="{% url 'datasets:pdf' request.user project.slug 1 name %}">Generate pdf</a>
         {% endif %}
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
