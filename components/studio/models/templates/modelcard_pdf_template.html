@@ -4,23 +4,84 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-whidth, initial-scale=1.0" />
-    <h1>Model card for {{ name }}</h1>
+    <h1>Model card for {{ name }}, version {{ version }}</h1>
 </head>
 
 <body>
-    {% for key, value in model_card_info.items %}
-    {% if value %}
-    <b class="label">Question {{ forloop.counter }}</b>
+    <b class="label">Section 1: Model details</b>
     <div class="border"></div>
-        <div class="question">
-            <label>{{ key }}</label>
-        </div>
-            <p class="answer">
-                <i>{{value}}</i>
-            </p>
+    {% for key, value in model_details.items %}
+    {% if value %}
+    <div class="question">
+        <label>{{ key }}</label>
     </div>
+    <p class="answer">
+        <i>{{ value }}</i>
+    </p>
     {% endif %}
     {% endfor %}
+    </div>
+    <b class="label">Section 2: Intended uses</b>
+    <div class="border"></div>
+    {% for key, value in intended_uses.items %}
+    {% if value %}
+    <div class="question">
+        <label>{{ key }}</label>
+    </div>
+    <p class="answer">
+        <i>{{ value }}</i>
+    </p>
+    {% endif %}
+    {% endfor %}
+    </div>
+    <b class="label">Section 3: Factors</b>
+    <div class="border"></div>
+    {% for key, value in factors.items %}
+    {% if value %}
+    <div class="question">
+        <label>{{ key }}</label>
+    </div>
+    <p class="answer">
+        <i>{{ value }}</i>
+    </p>
+    {% endif %}
+    {% endfor %}
+    </div>
+    <b class="label">Section 4: Metrics</b>
+    <div class="border"></div>
+    {% for key, value in metrics.items %}
+    {% if value %}
+    <div class="question">
+        <label>{{ key }}</label>
+    </div>
+    <p class="answer">
+        <i>{{ value }}</i>
+    </p>
+    {% endif %}
+    {% endfor %}
+    </div>
+    <b class="label">Section 5: Ethical Considerations</b>
+    <div class="border"></div>
+    {% if ethical_consideration %}
+    <div class="question">
+        <label>Ethical Considerations</label>
+    </div>
+    <p class="answer">
+        <i>{{ ethical_consideration }}</i>
+    </p>
+    {% endif %}
+    </div>
+    <b class="label">Section 6: Caveats and Recommendations</b>
+    <div class="border"></div>
+    {% if caveats_and_recommendations %}
+    <div class="question">
+        <label>Caveats and Recommendations</label>
+    </div>
+    <p class="answer">
+        <i>{{ caveats_and_recommendations }}</i>
+    </p>
+    {% endif %}
+    </div>
 </body>
 
 </html>

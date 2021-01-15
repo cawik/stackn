@@ -375,7 +375,12 @@ def view_pdf(request, user, project, id):
 
 
     card_object = ModelCard.objects.get(project=project.name, model=model.name, model_version=model.version)
-    model_card_info = ast.literal_eval(card_object.model_card)
+    model_details = ast.literal_eval(card_object.model_details)
+    intended_uses = ast.literal_eval(card_object.intended_uses)
+    factors = ast.literal_eval(card_object.factors)
+    metrics = ast.literal_eval(card_object.metrics)
+    ethical_consideration = card_object.ethical_consideration
+    caveats_and_recommendations = card_object.caveats_and_recommendations
 
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(model.name)
@@ -384,7 +389,7 @@ def view_pdf(request, user, project, id):
     font_config = FontConfiguration()
     css = CSS('./static/css/datasheet.css', font_config=font_config)
 
-    html_string=render_to_string('modelcard_pdf_template.html', {'model_card_info': model_card_info, 'name': name})
+    html_string=render_to_string('modelcard_pdf_template.html', {'model_details': model_details, 'intended_uses': intended_uses, 'factors': factors, 'metrics': metrics, 'ethical_consideration': ethical_consideration, 'caveats_and_recommendations': caveats_and_recommendations, 'version': model.version, 'name': model.name})
     html = HTML(string=html_string)
     result = html.write_pdf(stylesheets=[css], font_config=font_config)
 

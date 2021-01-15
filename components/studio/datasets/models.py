@@ -75,8 +75,6 @@ class Dataset(models.Model):
     name = models.CharField(max_length=255)
     version_tag = models.CharField(max_length=255, default="", help_text="Tag that points to the data file")
     datasheet = models.TextField(blank=True)
-    fpdf = models.FileField(upload_to='files/')
-    #datasheet_upload = models.FileField(upload_to='datasheets/')
 
 """
 @receiver(pre_save, sender=Dataset, dispatch_uid='dataset_pre_save_signal')

@@ -7,24 +7,18 @@ from studio.minio import MinioRepository, ResponseError
 from django.conf import settings as sett
 from projects.helpers import get_minio_keys
 from .forms import DatasheetForm
-from .helpers import create_pdf
 from .models import Dataset
 from .datasheet_questions import datasheet_questions
 from django.urls import reverse
-#from io import BytesIO
-#from xhtml2pdf import pisa
 from django.template import Context, Template
 from django.template.loader import render_to_string
 from weasyprint import HTML, CSS
 from weasyprint.fonts import FontConfiguration
 import tempfile
 import ast
-
 import os
-#from xhtml2pdf import pisa
 from django.contrib.staticfiles import finders
-#from fpdf import FPDF
-#from .utils import render_to_pdf
+
 
 @login_required
 def page(request, user, project, page_index):
@@ -164,16 +158,6 @@ def submit(request, user, project, page_index, name):
             print(request.POST)  
         else:
             print("Invalid form. Redirecting back to datasets...")
-        #if 'pdf' in request.POST:
-            #print("Generating pdf...")
-            #dataset_context = {"project": project, 'name': name, 'datasheet': datasheet_info }
-            #pdf = render_to_pdf('datasheet_pdf_template.html', dataset_context)
-            #print(pdf)
-            #dataset.fpdf = pdf
-            #dataset.save()
-            #pdf = render_pdf_view(request, 'datasheet_pdf_template.html', dataset_context)
-            #return render(request, pdf)
-            #print(pdf)   
         return HttpResponseRedirect(
             reverse('datasets:page', kwargs={'user': request.user, 'project': project, 'page_index': 1}))
     return render(request, 'dataset_datasheet.html', locals())

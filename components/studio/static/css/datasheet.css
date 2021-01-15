@@ -12,9 +12,11 @@ h1 {
 .question {
   font-family: IBMPlexSans-Regular;
   margin-bottom: 10px;
+  padding-left: 5px;
 }
 .answer{
   font-family: IBMPlexSans-Light;
+  padding-left: 5px;
 }
 .border {
   border-top: 1px solid #c8e1ff;

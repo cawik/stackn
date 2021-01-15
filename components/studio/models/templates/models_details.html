@@ -20,7 +20,7 @@
         </li>
         <li class="nav-item">
             <a class="nav-link" id="logs-tab" data-toggle="tab" href="#logs" role="tab" aria-controls="logs"
-                aria-selected="false">Training Logs</a>
+                aria-selected="false">Logs</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" id="graphics-tab" data-toggle="tab" href="#graphics" role="tab" aria-controls="graphics"
@@ -508,6 +508,7 @@
                 <div style="margin-top: 35px">
                     <a href="{% url 'models:model_card' request.user project.slug model.id 'update' %}"
                     class="btn btn-primary" style="width: fit-content;">Update model card</a>
+                    <a class="btn btn-primary" href="{% url 'models:pdf' request.user project.slug model.id %}">Generate PDF</a>
                 </div>
             </div>
             {% endif %}
